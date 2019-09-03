@@ -16,9 +16,9 @@ export default new Router({
       component: require('@/components/FlaskPage').default
     },
     {
-      path: '/drug_drop',
-      name: 'drug_drop-page',
-      component: require('@/components/DrugDropPage').default
+      path: '/drag_drop',
+      name: 'drag_drop-page',
+      component: require('@/components/DragDropPage').default
     },
     {
       path: '/line_connect',

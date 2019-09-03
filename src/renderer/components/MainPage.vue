@@ -3,7 +3,7 @@
         <h1>OpenCVFlow の遊び場へようこそ</h1>
         <router-link to="/flask">Flask連携お試しページ</router-link>
         <br>
-        <router-link to="/drug_drop">ドラッグアンドドロップのお試しページ</router-link>
+        <router-link to="/drag_drop">ドラッグアンドドロップのお試しページ</router-link>
         <br>
         <router-link to="/line_connect">線連結お試しページ</router-link>
     </div>

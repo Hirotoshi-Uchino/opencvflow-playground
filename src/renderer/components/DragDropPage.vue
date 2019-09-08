@@ -1,5 +1,7 @@
 <template>
-  <div>Vue-konva のサンプルをコピペ。v-layer を使うために webpack.renderer.config.js を修正する必要があることに注意。(<a href="https://github.com/konvajs/vue-konva/issues/14">https://github.com/konvajs/vue-konva/issues/14</a>)
+  <div>
+    <router-link to="/">ホームへ</router-link><br>
+    Vue-konva のサンプルをコピペ。v-layer を使うために webpack.renderer.config.js を修正する必要があることに注意。(<a href="https://github.com/konvajs/vue-konva/issues/14">https://github.com/konvajs/vue-konva/issues/14</a>)
     <v-stage
       ref="stage"
       :config="configKonva"

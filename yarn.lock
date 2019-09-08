@@ -5768,6 +5768,11 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
+konva@^4.0.9:
+  version "4.0.9"
+  resolved "https://registry.yarnpkg.com/konva/-/konva-4.0.9.tgz#0f90d8aa067d74c4ffe2887a13465b9230c98f06"
+  integrity sha512-ON2zKhMjdNGFT2H92rR6fowagfXz/1X1tfx/LqgNB1UVuaB6HIhFSLBhGoLem7psxUaKOHAO5g1Hlp1vdOXrJg==
+
 latest-version@^5.0.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/latest-version/-/latest-version-5.1.0.tgz#119dfe908fe38d15dfa43ecd13fa12ec8832face"
@@ -9591,6 +9596,11 @@ vue-html-loader@^1.2.4:
     html-minifier "^2.1.5"
     loader-utils "^1.0.2"
     object-assign "^4.1.0"
+
+vue-konva@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/vue-konva/-/vue-konva-2.0.9.tgz#ef9c01beaea0cf803be5c727ce27310c50a252ec"
+  integrity sha512-LdoeTGvoF2afMlk8Ly4vi9Bx00qiaPOnRyVoI++4NiFU/G0a6IHB2XQSiP/YxTYEBb8rmm3AaTiFyX4Fhfztcg==
 
 vue-loader@^15.2.4:
   version "15.7.1"

@@ -5,6 +5,8 @@
         <br>
         <router-link to="/drag_drop">ドラッグアンドドロップのお試しページ</router-link>
         <br>
+        <router-link to="/drag_drop_list">ドラッグアンドドロップ (リスト) のお試しページ</router-link>
+        <br>
         <router-link to="/line_connect">線連結お試しページ</router-link>
     </div>
 </template>

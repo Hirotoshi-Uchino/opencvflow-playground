@@ -21,6 +21,11 @@ export default new Router({
       component: require('@/components/DragDropPage').default
     },
     {
+      path: '/drag_drop_list',
+      name: 'drag_drop_list-page',
+      component: require('@/components/DragDropListPage').default
+    },
+    {
       path: '/line_connect',
       name: 'line_connect-page',
       component: require('@/components/LineConnectPage').default

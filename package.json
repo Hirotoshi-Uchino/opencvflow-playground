@@ -57,6 +57,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "konva": "^4.0.9",
+    "photon": "https://github.com/connors/photon",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "vue": "^2.5.16",

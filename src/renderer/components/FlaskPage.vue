@@ -7,7 +7,9 @@
       <input v-model="bNum" type="number" style="width: 50px"> =
       <span>{{this.result}}</span>
     <br>
-  <button @click="sum">実行</button>
+    <div class="btn-group">
+  <button class="btn btn-large btn-primary" @click="sum">実行</button>
+    </div>
   </div>
 </template>
 

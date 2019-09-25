@@ -16,6 +16,16 @@ export default new Router({
       component: require('@/components/FlaskPage').default
     },
     {
+      path: '/custom_drag_drop',
+      name: 'custom_drag_drop-page',
+      component: require('@/components/CustomDragDropPage').default
+    },
+    {
+      path: '/konva_drag_drop',
+      name: 'konva_drag_drop-page',
+      component: require('@/components/KonvaDragDropPage').default
+    },
+    {
       path: '/drag_drop',
       name: 'drag_drop-page',
       component: require('@/components/DragDropPage').default

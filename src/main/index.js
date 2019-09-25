@@ -18,7 +18,7 @@ function createWindow () {
    * Initial window options
    */
   const subpy = require('child_process').spawn('./venv/bin/python', ['./backend/api.py']);
-  const rq = require('request-promise');
+  const rp = require('request-promise');
 
   const openWindow = function () {
     mainWindow = new BrowserWindow({
@@ -39,7 +39,7 @@ function createWindow () {
   };
 
   const startUp = function () {
-    rq(mainURL)
+    rp(mainURL)
       .then((htmlString) => {
         console.log(htmlString);
         console.log('server started');

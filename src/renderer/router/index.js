@@ -41,6 +41,21 @@ export default new Router({
       component: require('@/components/LineConnectPage').default
     },
     {
+      path: '/vue_diagrams',
+      name: 'vue_diagrams-page',
+      component: require('@/components/VueDiagramsPage').default
+    },
+    {
+      path: '/vue_mermaid',
+      name: 'vue_mermaid-page',
+      component: require('@/components/VueMermaidPage').default
+    },
+    {
+      path: '/svg_canvas',
+      name: 'svg_canvas-page',
+      component: require('@/components/SvgCanvasPage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

@@ -37,12 +37,17 @@
           @dragend="handleDragend"
       >
         <v-layer ref="layer">
+          <CustomBlock
+              :text-label="text"
+          />
           <!--v-for="(block, id) in blocks"-->
           <!--<OcvfBlock-->
               <!--v-for="block in blocks"-->
               <!--:text-label="block.label"-->
               <!--@rightClick="removeBlock"-->
           <!--/>-->
+
+
         </v-layer>
 
         <v-layer ref="dragLayer"></v-layer>
@@ -59,6 +64,7 @@
   import VueKonva from 'vue-konva';
   import OcvfButton from './atoms/OcvfButton'
   import OcvfBlock from './atoms/OcvfBlock'
+  import CustomBlock from './atoms/CustomBlock'
   import OcvfContextMenu from './atoms/OcvfContextMenu'
   // import {VueContext} from 'vue-context';
 
@@ -87,7 +93,7 @@
   export default {
     name: "KonvaDragDropPage",
     // components: {OcvfButton, OcvfBlock, OcvfContextMenu, VueContext},
-    components: {OcvfButton, OcvfBlock, OcvfContextMenu},
+    components: {OcvfButton, OcvfBlock, OcvfContextMenu, CustomBlock},
     display: "Simple",
     order: 0,
     data() {
@@ -97,8 +103,8 @@
           width: width,
           height: height
         },
-        processDefinitions: processDefinitions
-
+        processDefinitions: processDefinitions,
+        text: "TEST"
       };
     },
     computed: {

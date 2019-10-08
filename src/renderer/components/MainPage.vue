@@ -8,6 +8,9 @@
         </span>
         <span class="nav-group-item">
           <span class="icon icon-mouse"></span>
+        <br>
+        <router-link to="/svg_canvas">SVGによるCanvasお試しページ</router-link>
+        <br>
         <router-link to="/custom_drag_drop">自作ドラッグアンドドロップのお試しページ</router-link>
         </span>
         <span class="nav-group-item">
@@ -26,6 +29,10 @@
         <span class="icon icon-flow-branch"></span>
         <router-link to="/line_connect">線連結お試しページ</router-link>
         </span>
+        <br>
+        <router-link to="/vue_diagrams">vue-diagramsお試しページ</router-link>
+        <!--<br>-->
+        <!--<router-link to="/vue_mermaid">vue_mermaidお試しページ</router-link>-->
     </nav>
     </div>
 </template>

@@ -23,7 +23,11 @@
        @click.right="handleRightClick"
        v-drag
   >
+    <div class="ocvf-block-left" @click="createPoint"></div>
+    <div class="ocvf-block-inside">
     {{iconLabel}}
+    </div>
+    <div class="ocvf-block-right"  @click="createPoint"></div>
   </div>
 
 
@@ -113,9 +117,23 @@
 
         // this.$storeは、コンポーネントをextendしてnew した場合だと使えない
         // storeをマウントするには...？
-
         // this.$emit('rightClick', ev)
       },
+
+      createPoint: function (ev) {
+        // 左borderを仮定
+        // この要素にまずは点を打ちたい
+        // click: 点を打つ, drag: border内での点の移動
+        // 離す: 線描画開始
+        // 再度クリック
+        //  if: right border
+        //     線をリンク
+        //     離すまでborder内で点を移動できる
+        //  else: 点&線消す
+
+        // point&lineはocvf-blockにbindされる...?
+
+      }
     }
 
   }
@@ -124,6 +142,12 @@
 <style scoped>
   .ocvf-block {
     position: absolute;
+    display: flex;
+  }
+
+
+  .ocvf-block-inside {
+    /*position: absolute;*/
     cursor: pointer;
     text-align: center;
     margin: 0 auto;
@@ -136,9 +160,20 @@
     border: solid 3px #444444;
   }
 
-  v-label {
-    user-select: none;
+
+  .ocvf-block-left{
+    cursor: pointer;
+    margin-right: 4px;
+    border-left: solid 2px black;
   }
+
+  .ocvf-block-right{
+    cursor: pointer;
+    margin-left: 4px;
+    border-right: solid 2px black;
+  }
+
+
 </style>
 
 <!--参考-->

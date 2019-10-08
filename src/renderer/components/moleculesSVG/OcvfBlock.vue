@@ -1,0 +1,69 @@
+<template>
+
+  <g :block-id="blockId" :x="x" :y="y">
+    <ocvf-left-side-bar :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
+    <ocvf-tile
+        :block-id="blockId"
+        :icon-label="iconLabel"
+        :x="x"
+        :y="y"
+        @handleRightClick="handleRightClick"
+        @blockSelected="startDrag">
+    </ocvf-tile>
+    <ocvf-right-side-bar :x="x" :y="y" @addPointRight="addPoint" ></ocvf-right-side-bar>
+  </g>
+</template>
+
+<script>
+  import OcvfTile from "../atomsSVG/OcvfTile"
+  import OcvfRightSideBar from "../atomsSVG/OcvfRightSideBar"
+  import OcvfLeftSideBar from "../atomsSVG/OcvfLeftSideBar"
+
+  export default {
+    name: "OcvfBlock",
+    components: {OcvfTile, OcvfRightSideBar, OcvfLeftSideBar},
+
+    props: {
+      blockId: {
+        type: Number,
+        default: 0
+      },
+      iconLabel: {
+        type: String,
+        default: ''
+      },
+      x: {
+        type: Number,
+        default: 50
+      },
+      y: {
+        type: Number,
+        default: 50
+      },
+
+    },
+
+    methods: {
+      startDrag: function (ev, blockId, blockX, blockY) {
+        this.$emit("blockSelected", ev, blockId, blockX, blockY);
+      },
+
+      addPoint: function(ev, points){
+        points.blockId = this.blockId
+        this.$emit("addLink", ev, points);
+      },
+
+      handleRightClick: function(ev, blockId){
+        this.$emit("removeBlock", ev, blockId)
+      }
+
+    }
+
+  }
+
+
+</script>
+
+<style scoped>
+
+</style>

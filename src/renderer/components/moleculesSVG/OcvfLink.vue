@@ -1,7 +1,8 @@
 <template>
   <g :link-id="linkInfo.id">
     <circle v-if="linkInfo.leftBarPoint.display"  :cx="linkInfo.leftBarPoint.x" :cy="linkInfo.leftBarPoint.y" r="3.5" fill="#585858"></circle>
-    <OcvfPath :if="linkInfo.path" :path-start="linkInfo.pathStart" :path-end="linkInfo.pathEnd" @handleRightClick="handleRightClick"></OcvfPath>
+    <!--<OcvfPath :if="linkInfo.path" :path-start="linkInfo.pathStart" :path-end="linkInfo.pathEnd" @handleRightClick="handleRightClick"></OcvfPath>-->
+    <OcvfPath :path-start="linkInfo.pathStart" :path-end="linkInfo.pathEnd" @handleRightClick="handleRightClick"></OcvfPath>
     <circle v-if="linkInfo.rightBarPoint.display" :cx="linkInfo.rightBarPoint.x" :cy="linkInfo.rightBarPoint.y" r="3.5" fill="#585858"></circle>
   </g>
 
@@ -15,15 +16,6 @@
 
     components: {OcvfPath},
 
-    data: function() {
-      return {
-        leftPoint: false,
-        rightPoint: false,
-        pseudoPath: false,
-        path: false,
-      }
-    },
-
     props: {
       linkInfo: {
         type: Object,
@@ -31,7 +23,7 @@
           return {
             id: 0,
             pointType: "",
-            path: false,
+            // path: false,
             leftBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
             rightBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
             pathStart: {x: 0, y: 0},

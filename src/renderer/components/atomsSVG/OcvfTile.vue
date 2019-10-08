@@ -9,8 +9,6 @@
 </template>
 
 <script>
-  import Vue from "vue";
-
   export default {
     name: "OcvfTile",
 
@@ -49,9 +47,7 @@
         this.$emit("blockSelected", ev, this.blockId, this.x, this.y);
       },
       handleRightClick: function (ev) {
-        // console.log('右クリック! ひとまずBlock除去')
         this.$emit('handleRightClick', ev, this.blockId)
-        // this.$store.commit('removeBlock', this.blockId)
       },
     }
   }

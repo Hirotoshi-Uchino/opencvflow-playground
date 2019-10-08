@@ -1,7 +1,6 @@
 <template>
   <path
       class="path"
-      :if="display"
       :path-start="pathStart"
       :path-end="pathEnd"
       :d="d"
@@ -10,6 +9,7 @@
       stroke="#585858"
       @click.right="handleRightClick"
   />
+  <!--:if="display"-->
 </template>
 
 <script>
@@ -17,9 +17,10 @@
     name: "OcvfPath",
 
     props: {
-      display: {
-        type: Boolean
-      },
+      // display: {
+      //   type: Boolean,
+      //   default: false
+      // },
       pathStart:{
         type: Object
       },

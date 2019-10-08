@@ -190,8 +190,6 @@
           let y = ev.offsetY - this.dragOffset.y;
           let posOnBar = closestPoint(pathNode, [x, y])
 
-          this.selectedLink.pathStart.x = posOnBar[0];
-          this.selectedLink.pathStart.y = posOnBar[1];
           this.selectedLink[this.selectedPointType].x = posOnBar[0];
           this.selectedLink[this.selectedPointType].y = posOnBar[1];
         }
@@ -199,7 +197,6 @@
         if (this.dragging === "drawingPath") {
           let x = ev.offsetX - this.dragOffset.x
           let y = ev.offsetY - this.dragOffset.y
-          this.selectedLink.path = true
           // ポインタをpath上からずらしてイベント検知しやすくする
           if(this.selectedLink.pathStart.x < x){
             this.selectedLink.pathEnd.x = x - 3
@@ -231,7 +228,10 @@
       stopDrag(ev) {
         console.log("drag End!")
         if (this.dragging === "firstPointMove") {
+          // Linkの最初の点の位置が定まったのでPathの描画にうつる
           this.dragging = "drawingPath";
+          this.selectedLink.pathStart.x = this.selectedLink[this.selectedPointType].x;
+          this.selectedLink.pathStart.y = this.selectedLink[this.selectedPointType].y;
         } else if (this.dragging !== "none") {
           this.dragging = "none";
         }
@@ -345,7 +345,7 @@
         const link = {
           id: this.$store.getters.getNextLinkId,
           pointType: point.pointType,
-          path: false,
+          // path: false,
           leftBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
           rightBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
           pathStart: {x: 0, y: 0},

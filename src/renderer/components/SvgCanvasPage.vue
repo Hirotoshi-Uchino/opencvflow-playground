@@ -65,7 +65,7 @@
     data: function () {
       return {
         dragging: "none",
-        linkIdsAttachingBlock: {}, // BlockのSidebarに対してlinkは1対多の関係
+        edgeTypeLinksOfBlock: {}, // BlockのSidebarに対してlinkは1対多の関係
         processDefinitions: processDefinitions,
         selectedBlockId: 0,
         selectedLinkId: 0,
@@ -97,14 +97,23 @@
         }
       },
 
-      existSameLink: function(){
-        // 同じBlockをつなぐリンクがすでに生成されているか
+      // existSameLink: function(){
+      //   // 同じBlockをつなぐリンクがすでに生成されているか
+      //   let leftBarBlockId = this.selectedLink.leftBarPoint.blockId;
+      //   let rightBarBlockId = this.selectedLink.rightBarPoint.blockId;
+      //   let sameLinks = this.links.filter((link) => {
+      //     return link.leftBarPoint.blockId === leftBarBlockId & link.rightBarPoint.blockId === rightBarBlockId
+      //   })
+      //   return sameLinks.length > 1
+      // },
+
+      doublePointsOnLeftSideBar: function(){
         let leftBarBlockId = this.selectedLink.leftBarPoint.blockId;
-        let rightBarBlockId = this.selectedLink.rightBarPoint.blockId;
-        let sameLinks = this.links.filter((link) => {
-          return link.leftBarPoint.blockId === leftBarBlockId & link.rightBarPoint.blockId === rightBarBlockId
+        let linksOnLeftSidebar = this.links.filter((link) => {
+          return link.leftBarPoint.blockId === leftBarBlockId
         })
-        return sameLinks.length > 1
+        return linksOnLeftSidebar.length > 1
+
       },
 
       addBlock: function (ev) {
@@ -120,8 +129,8 @@
 
       removeBlock: function(ev, blockId){
         // blockに紐づくLinkを消去
-        let rLinkId = this.linkIdsAttachingBlock[blockId].rightSideBar.id
-        let lLinkId = this.linkIdsAttachingBlock[blockId].leftSideBar.id
+        let rLinkId = this.edgeTypeLinksOfBlock[blockId].rightSideBar.id
+        let lLinkId = this.edgeTypeLinksOfBlock[blockId].leftSideBar.id
         this.removeLink(rLinkId)
         this.removeLink(lLinkId)
 
@@ -158,11 +167,9 @@
 
           this.$store.commit('updateBlockPosition', {blockId: this.selectedBlockId, x: x, y: y})
 
-
-          // TODO: linkも同時にずらす
-          this.selectedLinkId =  this.linkIdsAttachingBlock[this.selectedBlockId].leftSideBar.id
-          let pathEdge = this.linkIdsAttachingBlock[this.selectedBlockId].leftSideBar.pathEdge
-          if(this.selectedLink){
+          for(let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
+            this.selectedLinkId = Number(linkId)
+            let pathEdge = this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar[linkId]
             let nowX = this.selectedLink.leftBarPoint.x
             let nowY = this.selectedLink.leftBarPoint.y
             this.selectedLink[pathEdge].x = nowX + diffX
@@ -171,9 +178,9 @@
             this.selectedLink.leftBarPoint.y = nowY + diffY
           }
 
-          this.selectedLinkId = this.linkIdsAttachingBlock[this.selectedBlockId].rightSideBar.id
-          pathEdge = this.linkIdsAttachingBlock[this.selectedBlockId].rightSideBar.pathEdge
-          if(this.selectedLink) {
+          for(let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar) {
+            this.selectedLinkId = Number(linkId)
+            let pathEdge = this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar[linkId]
             let nowX = this.selectedLink.rightBarPoint.x
             let nowY = this.selectedLink.rightBarPoint.y
             this.selectedLink[pathEdge].x = nowX + diffX
@@ -181,6 +188,7 @@
             this.selectedLink.rightBarPoint.x = nowX + diffX
             this.selectedLink.rightBarPoint.y = nowY + diffY
           }
+          // }
 
         }
 
@@ -258,8 +266,8 @@
               return
             }
 
-            // すでに同じリンクが生成されている場合、リンクを消す
-            if(this.existSameLink()){
+            // leftSidebarにリンクが2つつながる場合、リンクを消す (同じリンクの場合を包含)
+            if(this.doublePointsOnLeftSideBar()){
               this.selectedPointType = ""
               this.removeLink(this.selectedLinkId)
               return
@@ -275,68 +283,7 @@
             this.selectedLink[this.selectedPointType].on = point.on
             this.selectedLink[this.selectedPointType].display = true
 
-            let linkIdsForPreviousBlock = {
-              leftSideBar: {
-                id: 0,
-                pathEdge: ''
-              },
-              rightSideBar: {
-                id: this.selectedLinkId,
-                pathEdge: ''
-              }
-            }
-
-            let linkIdsForNextBlock = {
-              leftSideBar: {
-                id: this.selectedLinkId,
-                pathEdge: ''
-              },
-              rightSideBar: {
-                id: 0,
-                pathEdge: ''
-              }
-            }
-
-            if(this.selectedPointType === 'leftBarPoint'){
-              linkIdsForPreviousBlock.rightSideBar.pathEdge = 'pathStart'
-              linkIdsForNextBlock.leftSideBar.pathEdge = 'pathEnd'
-            } else {
-              linkIdsForPreviousBlock.rightSideBar.pathEdge = 'pathEnd'
-              linkIdsForNextBlock.leftSideBar.pathEdge = 'pathStart'
-            }
-
-
-            if(this.linkIdsAttachingBlock[this.selectedLink.rightBarPoint.blockId]){
-              this.linkIdsAttachingBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar.id
-                = this.selectedLinkId
-
-              if(this.selectedPointType === 'leftBarPoint'){
-                this.linkIdsAttachingBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar.pathEdge
-                  = 'pathStart'
-              } else {
-                this.linkIdsAttachingBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar.pathEdge
-                  = 'pathEnd'
-              }
-
-            } else{
-              this.linkIdsAttachingBlock[this.selectedLink.rightBarPoint.blockId] = linkIdsForPreviousBlock
-            }
-
-            if(this.linkIdsAttachingBlock[this.selectedLink.leftBarPoint.blockId]){
-              this.linkIdsAttachingBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar.id
-                = this.selectedLinkId
-
-              if(this.selectedPointType === 'leftBarPoint'){
-                this.linkIdsAttachingBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar.pathEdge
-                  = 'pathEnd'
-              } else {
-                this.linkIdsAttachingBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar.pathEdge
-                  = 'pathStart'
-              }
-
-            } else {
-              this.linkIdsAttachingBlock[this.selectedLink.leftBarPoint.blockId] = linkIdsForNextBlock
-            }
+            this.updateEdgeTypeLinksOfBlock()
 
           }
           return
@@ -374,6 +321,61 @@
           this.dragOffset.y = ev.offsetY - point.y;
         });
 
+      },
+
+      updateEdgeTypeLinksOfBlock: function(){
+        // =========================================================
+        // Blockが移動したときにLinkを追従させるための情報を保持する
+        // =========================================================
+        let linkIdsForPreviousBlock = {
+          leftSideBar: {},
+          rightSideBar: {}
+        }
+
+        let linkIdsForNextBlock = {
+          leftSideBar: {},
+          rightSideBar: {}
+        }
+
+        if(this.selectedPointType === 'leftBarPoint'){
+          linkIdsForPreviousBlock.rightSideBar[this.selectedLinkId] = 'pathStart'
+          linkIdsForNextBlock.leftSideBar[this.selectedLinkId] = 'pathEnd'
+        } else {
+          linkIdsForPreviousBlock.rightSideBar[this.selectedLinkId] = 'pathEnd'
+          linkIdsForNextBlock.leftSideBar[this.selectedLinkId] = 'pathStart'
+        }
+
+        if(this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId]){
+          this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
+            = ""
+
+          if(this.selectedPointType === 'leftBarPoint'){
+            this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
+              = 'pathStart'
+          } else {
+            this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
+              = 'pathEnd'
+          }
+
+        } else{
+          this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId] = linkIdsForPreviousBlock
+        }
+
+        if(this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId]){
+          this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
+            = ""
+
+          if(this.selectedPointType === 'leftBarPoint'){
+            this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
+              = 'pathEnd'
+          } else {
+            this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
+              = 'pathStart'
+          }
+
+        } else {
+          this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId] = linkIdsForNextBlock
+        }
       }
 
     }

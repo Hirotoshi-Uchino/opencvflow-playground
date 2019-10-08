@@ -7,6 +7,8 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+import 'photon/dist/css/photon.css'
+
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(Vuetify);
 Vue.http = Vue.prototype.$http = axios

@@ -3,6 +3,7 @@
       :name="name"
       :label="label"
       :icon-label="iconLabel"
+      :process-id="processId"
       @click="handleClick"
   >
     <!--:name="name"-->
@@ -39,12 +40,15 @@
         type: String,
         default: 'A'
       },
+      processId:{
+        type: Number
+      }
     },
 
     methods: {
       handleClick: function (ev) {
         console.log(this.process)
-        this.$emit('click', ev)
+        this.$emit('click', ev, this.iconLabel, this.processId)
       }
     }
   }

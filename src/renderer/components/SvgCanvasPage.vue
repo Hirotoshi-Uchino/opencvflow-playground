@@ -9,6 +9,7 @@
             :name="process.name"
             :label="process.label"
             :icon-label="process.icon"
+            :process-id="process.processId"
             @click="addBlock"
         >
           {{process.label}}
@@ -117,13 +118,13 @@
 
       },
 
-      addBlock: function (ev) {
+      addBlock: function (ev, iconLabel, processId) {
         // const name = ev.currentTarget.getAttribute('name')
         // const label = ev.currentTarget.getAttribute('label')
-        const iconLabel = ev.currentTarget.getAttribute('icon-label')
+        // const iconLabel = ev.currentTarget.getAttribute('icon-label')
         const nextLabelId = this.$store.getters.getNextBlockId;
 
-        const block = {blockId: nextLabelId, iconLabel: iconLabel, x: 50, y: 50, execButton: false}
+        const block = {blockId: nextLabelId, iconLabel: iconLabel, x: 50, y: 50, execButton: false, processId: processId}
         this.$store.commit('addBlock', block)
 
       },

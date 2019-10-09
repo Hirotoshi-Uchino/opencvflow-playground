@@ -10,28 +10,36 @@ Vue.use(Vuex)
 let blocks = [
   {
     blockId: 1,
-    iconLabel: 'GG',
+    processId: 0,
+    iconLabel: 'In',
+    execButton: false,
     x: 20,
-    y: 10
+    y: 30
   },
   {
     blockId: 2,
-    iconLabel: 'GF',
+    processId: 1,
+    iconLabel: 'GS',
+    execButton: false,
     x: 120,
-    y: 10
+    y: 30
   },
   {
     blockId: 3,
-    iconLabel: 'Po',
+    iconLabel: 'GF',
+    processId: 3,
+    execButton: false,
     x: 220,
-    y: 10
+    y: 30
   },
-  // {
-  //   blockId: 4,
-  //   iconLabel: 'KK',
-  //   x: 320,
-  //   y: 10
-  // },
+  {
+    blockId: 4,
+    iconLabel: 'Po',
+    processId: 4,
+    execButton: false,
+    x: 320,
+    y: 30
+  },
 ]
 
 
@@ -41,7 +49,7 @@ export default new Vuex.Store({
     // blocks: {},
     blocks: blocks,
     links: [],
-    nextBlockId: 4,
+    nextBlockId: 5,
     nextLinkId: 1
   },
 

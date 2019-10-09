@@ -1,8 +1,8 @@
 <template>
 
-  <g :block-id="blockId" :x="x" :y="y">
+  <g :block-id="blockId" :x="x" :y="y" :process-id="processId">
     <ocvf-exec-button v-if="execButton" :exec-button="execButton" :x="x" :y="y"></ocvf-exec-button>
-    <ocvf-left-side-bar :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
+    <ocvf-left-side-bar v-if="displayLSB" :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
     <ocvf-tile
         :block-id="blockId"
         :icon-label="iconLabel"
@@ -45,8 +45,16 @@
       execButton: {
         type: Boolean,
         default: false
+      },
+      processId: {
+        type: Number
       }
+    },
 
+    computed: {
+      displayLSB: function(){
+        return this.processId !== 0 // prcessId = 1, すなわち入力のときは leftSideBar は表示しない
+      }
     },
 
     methods: {

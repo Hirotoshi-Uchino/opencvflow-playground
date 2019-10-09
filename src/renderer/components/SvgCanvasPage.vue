@@ -27,6 +27,7 @@
             :x="block.x" :y="block.y"
             :dragging="dragging"
             :exec-button="block.execButton"
+            :process-id="block.processId"
             @blockSelected="startDragBlock"
             @addLink="addLink"
             @removeBlock="removeBlock"
@@ -130,14 +131,22 @@
       },
 
       removeBlock: function(ev, blockId){
-        // blockに紐づくLinkを消去
-        let rLinkId = this.edgeTypeLinksOfBlock[blockId].rightSideBar.id
-        let lLinkId = this.edgeTypeLinksOfBlock[blockId].leftSideBar.id
-        this.removeLink(rLinkId)
-        this.removeLink(lLinkId)
-
         // blockを消去
         this.$store.commit('removeBlock', blockId)
+
+        // blockに紐づくLinkを消去
+        try {
+          for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar) {
+            this.removeLink(Number(linkId))
+          }
+          for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
+            this.removeLink(Number(linkId))
+          }
+        } catch(e){
+          // TODO: エラー処理
+          console.log(e)
+        }
+
       },
 
       startDragBlock: function (ev, blockId, blockX, blockY) {

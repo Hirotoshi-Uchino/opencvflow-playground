@@ -44,4 +44,7 @@
 </script>
 
 <style>
+  router-link{
+    cursor: pointer !important;
+  }
 </style>

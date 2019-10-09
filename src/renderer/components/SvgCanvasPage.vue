@@ -25,6 +25,7 @@
             :icon-label="block.iconLabel"
             :x="block.x" :y="block.y"
             :dragging="dragging"
+            :exec-button="block.execButton"
             @blockSelected="startDragBlock"
             @addLink="addLink"
             @removeBlock="removeBlock"
@@ -35,7 +36,6 @@
             @removeLink="removeLink"
         >
         </OcvfLink>
-
       </svg>
     </div>
   </div>
@@ -64,6 +64,7 @@
 
     data: function () {
       return {
+        execButton: false,
         dragging: "none",
         edgeTypeLinksOfBlock: {}, // BlockのSidebarに対してlinkは1対多の関係
         processDefinitions: processDefinitions,
@@ -122,7 +123,7 @@
         const iconLabel = ev.currentTarget.getAttribute('icon-label')
         const nextLabelId = this.$store.getters.getNextBlockId;
 
-        const block = {blockId: nextLabelId, iconLabel: iconLabel, x: 50, y: 50}
+        const block = {blockId: nextLabelId, iconLabel: iconLabel, x: 50, y: 50, execButton: false}
         this.$store.commit('addBlock', block)
 
       },
@@ -166,6 +167,8 @@
           let diffY = y - block.y
 
           this.$store.commit('updateBlockPosition', {blockId: this.selectedBlockId, x: x, y: y})
+
+          if(!this.edgeTypeLinksOfBlock[this.selectedBlockId]) return
 
           for(let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
             this.selectedLinkId = Number(linkId)

@@ -1,6 +1,7 @@
 <template>
 
   <g :block-id="blockId" :x="x" :y="y">
+    <ocvf-exec-button v-if="execButton" :exec-button="execButton" :x="x" :y="y"></ocvf-exec-button>
     <ocvf-left-side-bar :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
     <ocvf-tile
         :block-id="blockId"
@@ -18,10 +19,11 @@
   import OcvfTile from "../atomsSVG/OcvfTile"
   import OcvfRightSideBar from "../atomsSVG/OcvfRightSideBar"
   import OcvfLeftSideBar from "../atomsSVG/OcvfLeftSideBar"
+  import OcvfExecButton from "../atomsSVG/OcvfExecButton"
 
   export default {
     name: "OcvfBlock",
-    components: {OcvfTile, OcvfRightSideBar, OcvfLeftSideBar},
+    components: {OcvfTile, OcvfRightSideBar, OcvfLeftSideBar, OcvfExecButton},
 
     props: {
       blockId: {
@@ -40,6 +42,10 @@
         type: Number,
         default: 50
       },
+      execButton: {
+        type: Boolean,
+        default: false
+      }
 
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <g :icon-label="iconLabel" @pointerdown="startDrag" @click.right="handleRightClick" :block-id="blockId" :x="x" :y="y">
+  <g :icon-label="iconLabel" @pointerdown="startDrag" @click.right="handleRightClick" :block-id="blockId" :x="x" :y="y" class="tile">
     <rect :x="x" :y="y" width="50" height="50" stroke="#444444" stroke-width="4" rx="10" yr="10" fill="#f0f8ff"/>
     <!--TODO: 文字のブロック内の位置調整-->
     <text :x="textX" :y="textY">
@@ -56,9 +56,20 @@
 
 <style scoped>
 
-  g{
+  /*
+  photon.cssを入れると g でまとめたやつの cursor: pointer が効かなくなった
+  */
+  rect{
     cursor: pointer;
   }
+
+  text{
+    cursor: pointer;
+  }
+
+  /*g{*/
+    /*cursor: pointer !important;*/
+  /*}*/
 
   text {
     font-family: Times New Roman;

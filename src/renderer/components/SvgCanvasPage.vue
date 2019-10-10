@@ -125,7 +125,15 @@
         // const iconLabel = ev.currentTarget.getAttribute('icon-label')
         const nextLabelId = this.$store.getters.getNextBlockId;
 
-        const block = {blockId: nextLabelId, iconLabel: iconLabel, x: 50, y: 50, execButton: false, processId: processId}
+        const block = {
+          blockId: nextLabelId,
+          iconLabel: iconLabel,
+          x: 50,
+          y: 50,
+          execButton: false,
+          processId: processId,
+          LinkIdsToNextBlock: [], // rightSideBar につくLinkのId. 次の Block への参照になる
+        }
         this.$store.commit('addBlock', block)
 
       },
@@ -137,10 +145,22 @@
         // blockに紐づくLinkを消去
         try {
           for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar) {
+            // 反対側のLink情報を先に消す
+            this.selectedLinkId = Number(linkId)
+            let blockId = this.selectedLink.leftBarPoint.blockId // linkの反対側のBlock
+            delete this.edgeTypeLinksOfBlock[blockId].leftSideBar[this.selectedLinkId]
+
             this.removeLink(Number(linkId))
+
           }
           for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
+            // 反対側のLink情報を先に消す
+            this.selectedLinkId = Number(linkId)
+            let blockId = this.selectedLink.rightBarPoint.blockId // linkの反対側のBlock
+            delete this.edgeTypeLinksOfBlock[blockId].rightSideBar[this.selectedLinkId]
+
             this.removeLink(Number(linkId))
+            // TODO: 反対側のLink情報も消す
           }
         } catch(e){
           // TODO: エラー処理
@@ -295,6 +315,9 @@
             this.selectedLink[this.selectedPointType].y = point.y
             this.selectedLink[this.selectedPointType].on = point.on
             this.selectedLink[this.selectedPointType].display = true
+
+
+            this.$store.commit('addNextLink2Block', {blockId: this.selectedLink.rightBarPoint.blockId , linkId: this.selectedLinkId})
 
             this.updateEdgeTypeLinksOfBlock()
 

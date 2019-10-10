@@ -14,7 +14,8 @@ let blocks = [
     iconLabel: 'In',
     execButton: false,
     x: 20,
-    y: 30
+    y: 30,
+    LinkIdsToNextBlock: []
   },
   {
     blockId: 2,
@@ -22,7 +23,8 @@ let blocks = [
     iconLabel: 'GS',
     execButton: false,
     x: 120,
-    y: 30
+    y: 30,
+    LinkIdsToNextBlock: []
   },
   {
     blockId: 3,
@@ -30,7 +32,8 @@ let blocks = [
     processId: 3,
     execButton: false,
     x: 220,
-    y: 30
+    y: 30,
+    LinkIdsToNextBlock: []
   },
   {
     blockId: 4,
@@ -38,7 +41,8 @@ let blocks = [
     processId: 4,
     execButton: false,
     x: 320,
-    y: 30
+    y: 30,
+    LinkIdsToNextBlock: []
   },
 ]
 
@@ -60,10 +64,6 @@ export default new Vuex.Store({
       ++state.nextBlockId
     },
 
-    selectedBlock: function(state, blockId) {
-      return state.blocks.find(block => block.blockId === blockId)
-    },
-
     removeBlock(state, blockId){
       let index = state.blocks.findIndex(block => block.blockId === blockId)
       if(index >= 0) {
@@ -79,7 +79,13 @@ export default new Vuex.Store({
 
     incrementNextLinkId(state){
       ++state.nextLinkId
-    }
+    },
+
+    addNextLink2Block(state, payload){
+      let selectedBlock = state.blocks.find(block => block.blockId === payload.blockId)
+      selectedBlock.LinkIdsToNextBlock.push(payload.linkId)
+    },
+
   },
 
   getters: {

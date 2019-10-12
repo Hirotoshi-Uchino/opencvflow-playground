@@ -11,6 +11,9 @@
         <br>
         <router-link to="/svg_canvas">SVGによるCanvasお試しページ</router-link>
         <br>
+        <br>
+        <router-link to="/svg_page">SVG全体作成ページ</router-link>
+        <br>
         <router-link to="/custom_drag_drop">自作ドラッグアンドドロップのお試しページ</router-link>
         </span>
         <span class="nav-group-item">

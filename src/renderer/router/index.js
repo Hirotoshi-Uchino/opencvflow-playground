@@ -56,6 +56,11 @@ export default new Router({
       component: require('@/components/SvgCanvasPage').default
     },
     {
+      path: '/svg_page',
+      name: 'svg_page',
+      component: require('@/components/templates/SvgPageTemplate').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

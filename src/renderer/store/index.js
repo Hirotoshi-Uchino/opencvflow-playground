@@ -15,7 +15,8 @@ let blocks = [
     execButton: false,
     x: 20,
     y: 30,
-    LinkIdsToNextBlock: []
+    linksToNextBlock: [],
+    // linkToPreviousBlock: [],
   },
   {
     blockId: 2,
@@ -24,7 +25,8 @@ let blocks = [
     execButton: false,
     x: 120,
     y: 30,
-    LinkIdsToNextBlock: []
+    linksToNextBlock: [],
+    // linkToPreviousBlock: [],
   },
   {
     blockId: 3,
@@ -33,7 +35,8 @@ let blocks = [
     execButton: false,
     x: 220,
     y: 30,
-    LinkIdsToNextBlock: []
+    linksToNextBlock: [],
+    // linkToPreviousBlock: [],
   },
   {
     blockId: 4,
@@ -42,7 +45,8 @@ let blocks = [
     execButton: false,
     x: 320,
     y: 30,
-    LinkIdsToNextBlock: []
+    linksToNextBlock: [],
+    // linkToPreviousBlock: [],
   },
 ]
 
@@ -81,10 +85,30 @@ export default new Vuex.Store({
       ++state.nextLinkId
     },
 
-    addNextLink2Block(state, payload){
-      let selectedBlock = state.blocks.find(block => block.blockId === payload.blockId)
-      selectedBlock.LinkIdsToNextBlock.push(payload.linkId)
+
+    updateLinksToNextBlock(state, info) {
+      let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
+      selectedBlock.linksToNextBlock.push({id: info.linkId, pathEdge: info.pathEdge})
     },
+
+    updateLinkToPreviousBlock(state, info) {
+      let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
+      selectedBlock.linkToPreviousBlock = {id: info.linkId, pathEdge: info.pathEdge}
+    },
+
+    removeLinkToPreviousBlock(state, blockId) {
+      let selectedBlock = state.blocks.find(block => block.blockId === blockId)
+      delete selectedBlock.linkToPreviousBlock
+    },
+
+    removeOneLinkFromLinksToNextBlock(state, info) {
+      let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
+      let index = selectedBlock.linksToNextBlock.findIndex(link => link.id === info.linkId)
+      if(index >= 0) {
+        selectedBlock.linksToNextBlock.splice(index, 1)
+      }
+    }
+
 
   },
 

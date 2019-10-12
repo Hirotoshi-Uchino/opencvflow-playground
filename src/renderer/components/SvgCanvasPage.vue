@@ -35,7 +35,7 @@
         <OcvfLink
             v-for="link in links"
             :link-info="link"
-            @removeLink="removeLink"
+            @removeLink="removeLinkWithBlock"
         >
         </OcvfLink>
       </svg>
@@ -68,7 +68,6 @@
       return {
         execButton: false,
         dragging: "none",
-        edgeTypeLinksOfBlock: {}, // BlockのSidebarに対してlinkは1対多の関係
         processDefinitions: processDefinitions,
         selectedBlockId: 0,
         selectedLinkId: 0,
@@ -100,15 +99,16 @@
         }
       },
 
-      // existSameLink: function(){
-      //   // 同じBlockをつなぐリンクがすでに生成されているか
-      //   let leftBarBlockId = this.selectedLink.leftBarPoint.blockId;
-      //   let rightBarBlockId = this.selectedLink.rightBarPoint.blockId;
-      //   let sameLinks = this.links.filter((link) => {
-      //     return link.leftBarPoint.blockId === leftBarBlockId & link.rightBarPoint.blockId === rightBarBlockId
-      //   })
-      //   return sameLinks.length > 1
-      // },
+      removeLinkWithBlock: function(linkId){
+        let link = this.links.find(link => link.id === linkId)
+        let leftBarBlockId  = link.leftBarPoint.blockId
+        let rightBarBlockId = link.rightBarPoint.blockId
+
+        this.$store.commit('removeLinkToPreviousBlock', leftBarBlockId)
+        this.$store.commit('removeOneLinkFromLinksToNextBlock', {blockId: rightBarBlockId, linkId: linkId})
+
+        this.removeLink(linkId)
+      },
 
       doublePointsOnLeftSideBar: function(){
         let leftBarBlockId = this.selectedLink.leftBarPoint.blockId;
@@ -120,11 +120,7 @@
       },
 
       addBlock: function (ev, iconLabel, processId) {
-        // const name = ev.currentTarget.getAttribute('name')
-        // const label = ev.currentTarget.getAttribute('label')
-        // const iconLabel = ev.currentTarget.getAttribute('icon-label')
         const nextLabelId = this.$store.getters.getNextBlockId;
-
         const block = {
           blockId: nextLabelId,
           iconLabel: iconLabel,
@@ -132,40 +128,48 @@
           y: 50,
           execButton: false,
           processId: processId,
-          LinkIdsToNextBlock: [], // rightSideBar につくLinkのId. 次の Block への参照になる
+          linksToNextBlock: [],
         }
         this.$store.commit('addBlock', block)
 
       },
 
       removeBlock: function(ev, blockId){
-        // blockを消去
-        this.$store.commit('removeBlock', blockId)
-
         // blockに紐づくLinkを消去
         try {
-          for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar) {
-            // 反対側のLink情報を先に消す
-            this.selectedLinkId = Number(linkId)
-            let blockId = this.selectedLink.leftBarPoint.blockId // linkの反対側のBlock
-            delete this.edgeTypeLinksOfBlock[blockId].leftSideBar[this.selectedLinkId]
+          let block = this.$store.getters.getBlock(this.selectedBlockId)
 
-            this.removeLink(Number(linkId))
+          console.log('removeBlock')
+          for(let i in block.linksToNextBlock){
+            console.log(i)
+            let linkInfo = block.linksToNextBlock[i]
+            this.selectedLinkId = linkInfo.id
 
+            // blockの反対側のLink情報を消す
+            let leftBarBlockId = this.selectedLink.leftBarPoint.blockId
+            this.$store.commit('removeLinkToPreviousBlock', leftBarBlockId)
+
+            this.removeLink(linkInfo.id)
           }
-          for (let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
-            // 反対側のLink情報を先に消す
-            this.selectedLinkId = Number(linkId)
-            let blockId = this.selectedLink.rightBarPoint.blockId // linkの反対側のBlock
-            delete this.edgeTypeLinksOfBlock[blockId].rightSideBar[this.selectedLinkId]
 
-            this.removeLink(Number(linkId))
-            // TODO: 反対側のLink情報も消す
+          // for(let i in block.linkToPreviousBlock){
+          if(block.linkToPreviousBlock) {
+            // let linkInfo = block.linkToPreviousBlock[i]
+            let linkInfo = block.linkToPreviousBlock
+            this.selectedLinkId = linkInfo.id
+
+            // blockの反対側のLink情報を消す
+            let rightBarBlockId = this.selectedLink.rightBarPoint.blockId
+            this.$store.commit('removeOneLinkFromLinksToNextBlock', {blockId: rightBarBlockId, linkId: linkInfo.id})
+
+            this.removeLink(linkInfo.id)
           }
         } catch(e){
           // TODO: エラー処理
           console.log(e)
         }
+
+        this.$store.commit('removeBlock', blockId)
 
       },
 
@@ -198,22 +202,11 @@
 
           this.$store.commit('updateBlockPosition', {blockId: this.selectedBlockId, x: x, y: y})
 
-          if(!this.edgeTypeLinksOfBlock[this.selectedBlockId]) return
-
-          for(let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar) {
-            this.selectedLinkId = Number(linkId)
-            let pathEdge = this.edgeTypeLinksOfBlock[this.selectedBlockId].leftSideBar[linkId]
-            let nowX = this.selectedLink.leftBarPoint.x
-            let nowY = this.selectedLink.leftBarPoint.y
-            this.selectedLink[pathEdge].x = nowX + diffX
-            this.selectedLink[pathEdge].y = nowY + diffY
-            this.selectedLink.leftBarPoint.x = nowX + diffX
-            this.selectedLink.leftBarPoint.y = nowY + diffY
-          }
-
-          for(let linkId in this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar) {
-            this.selectedLinkId = Number(linkId)
-            let pathEdge = this.edgeTypeLinksOfBlock[this.selectedBlockId].rightSideBar[linkId]
+          // Linkも同時に動かす
+          for(let i in block.linksToNextBlock){
+            let linkInfo = block.linksToNextBlock[i]
+            this.selectedLinkId = linkInfo.id
+            let pathEdge = linkInfo.pathEdge
             let nowX = this.selectedLink.rightBarPoint.x
             let nowY = this.selectedLink.rightBarPoint.y
             this.selectedLink[pathEdge].x = nowX + diffX
@@ -221,7 +214,20 @@
             this.selectedLink.rightBarPoint.x = nowX + diffX
             this.selectedLink.rightBarPoint.y = nowY + diffY
           }
-          // }
+
+          // for(let i in block.linkToPreviousBlock){
+          if(block.linkToPreviousBlock) {
+            // let linkInfo = block.linkToPreviousBlock[i]
+            let linkInfo = block.linkToPreviousBlock
+            this.selectedLinkId = linkInfo.id
+            let pathEdge = linkInfo.pathEdge
+            let nowX = this.selectedLink.leftBarPoint.x
+            let nowY = this.selectedLink.leftBarPoint.y
+            this.selectedLink[pathEdge].x = nowX + diffX
+            this.selectedLink[pathEdge].y = nowY + diffY
+            this.selectedLink.leftBarPoint.x = nowX + diffX
+            this.selectedLink.leftBarPoint.y = nowY + diffY
+          }
 
         }
 
@@ -307,7 +313,6 @@
             }
 
             // TODO: ループが形成されてしまう場合、リンクを消す
-
             this.selectedPointType = point.pointType
             this.dragging = "secondPointMove"
 
@@ -316,11 +321,7 @@
             this.selectedLink[this.selectedPointType].on = point.on
             this.selectedLink[this.selectedPointType].display = true
 
-
-            this.$store.commit('addNextLink2Block', {blockId: this.selectedLink.rightBarPoint.blockId , linkId: this.selectedLinkId})
-
-            this.updateEdgeTypeLinksOfBlock()
-
+            this.updateLinkOfBlock() // this.selectedLink.leftBarPoint.blockId, this.selectedLink.rightBarPoint.blockId
           }
           return
         }
@@ -339,8 +340,8 @@
         link[point.pointType].y = point.y
         link.pathStart.x        = point.x
         link.pathStart.y        = point.y
-        link.pathEnd.x        = point.x
-        link.pathEnd.y        = point.y
+        link.pathEnd.x          = point.x
+        link.pathEnd.y          = point.y
         link[point.pointType].blockId = point.blockId
         link[point.pointType].on = point.on // sidebarの要素
         link[point.pointType].display = true
@@ -359,60 +360,26 @@
 
       },
 
-      updateEdgeTypeLinksOfBlock: function(){
-        // =========================================================
-        // Blockが移動したときにLinkを追従させるための情報を保持する
-        // =========================================================
-        let linkIdsForPreviousBlock = {
-          leftSideBar: {},
-          rightSideBar: {}
-        }
-
-        let linkIdsForNextBlock = {
-          leftSideBar: {},
-          rightSideBar: {}
-        }
+      updateLinkOfBlock: function(){
+        // sotre モジュールに委譲
+        let rightBarBlockId = this.selectedLink.rightBarPoint.blockId
+        let leftBarBlockId     = this.selectedLink.leftBarPoint.blockId
+        let rightBarBlockPathEdge
+        let leftBarBlockPathEdge
 
         if(this.selectedPointType === 'leftBarPoint'){
-          linkIdsForPreviousBlock.rightSideBar[this.selectedLinkId] = 'pathStart'
-          linkIdsForNextBlock.leftSideBar[this.selectedLinkId] = 'pathEnd'
+          leftBarBlockPathEdge = 'pathEnd'
+          rightBarBlockPathEdge = 'pathStart'
         } else {
-          linkIdsForPreviousBlock.rightSideBar[this.selectedLinkId] = 'pathEnd'
-          linkIdsForNextBlock.leftSideBar[this.selectedLinkId] = 'pathStart'
+          leftBarBlockPathEdge = 'pathStart'
+          rightBarBlockPathEdge = 'pathEnd'
         }
 
-        if(this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId]){
-          this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
-            = ""
+        // TODO: linkId追加
+        this.$store.commit('updateLinksToNextBlock', {blockId: rightBarBlockId, linkId: this.selectedLinkId, pathEdge: rightBarBlockPathEdge})
+        this.$store.commit('updateLinkToPreviousBlock', {blockId: leftBarBlockId, linkId: this.selectedLinkId, pathEdge: leftBarBlockPathEdge})
 
-          if(this.selectedPointType === 'leftBarPoint'){
-            this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
-              = 'pathStart'
-          } else {
-            this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId].rightSideBar[this.selectedLinkId]
-              = 'pathEnd'
-          }
-
-        } else{
-          this.edgeTypeLinksOfBlock[this.selectedLink.rightBarPoint.blockId] = linkIdsForPreviousBlock
-        }
-
-        if(this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId]){
-          this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
-            = ""
-
-          if(this.selectedPointType === 'leftBarPoint'){
-            this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
-              = 'pathEnd'
-          } else {
-            this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId].leftSideBar[this.selectedLinkId]
-              = 'pathStart'
-          }
-
-        } else {
-          this.edgeTypeLinksOfBlock[this.selectedLink.leftBarPoint.blockId] = linkIdsForNextBlock
-        }
-      }
+      },
 
     }
 

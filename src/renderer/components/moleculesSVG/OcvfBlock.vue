@@ -1,7 +1,7 @@
 <template>
 
   <g :block-id="blockId" :x="x" :y="y" :process-id="processId">
-    <ocvf-exec-button v-if="execButton" :exec-button="execButton" :x="x" :y="y"></ocvf-exec-button>
+    <ocvf-exec-button v-if="execButton" :exec-button="execButton" :x="x" :y="y" :block-id="blockId"></ocvf-exec-button>
     <ocvf-left-side-bar v-if="displayLSB" :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
     <ocvf-tile
         :block-id="blockId"

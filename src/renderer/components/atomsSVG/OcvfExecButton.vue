@@ -1,6 +1,13 @@
 <template>
   <g :transform="transform" :x="x" :y="y">
-    <path class="exec-btn" d="M -7 -8 L -7 8 L 7 0 z" fill="#2EFE2E" stroke-width="2" stroke="#A4A4A4"/>
+    <path
+        class="exec-btn"
+        d="M -7 -8 L -7 8 L 7 0 z"
+        fill="#2EFE2E"
+        stroke-width="2"
+        stroke="#A4A4A4"
+        @click="execPipeline"
+    />
   </g>
 
 </template>
@@ -17,6 +24,10 @@
     },
 
     props: {
+      blockId: {
+        type: Number,
+        default: 0
+      },
       x: {
         type: Number,
         default: 0
@@ -34,6 +45,14 @@
         this.ty = this.y - 14
         return `translate(${this.tx},${this.ty})`
       },
+    },
+
+    methods: {
+      execPipeline: function(){
+        let pipeline = this.$store.getters.getPipeline(this.blockId)
+        console.log('pipeline: ')
+        console.log(pipeline)
+      }
     }
   }
 </script>

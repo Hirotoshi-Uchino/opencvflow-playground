@@ -108,6 +108,7 @@
         this.$store.commit('removeOneLinkFromLinksToNextBlock', {blockId: rightBarBlockId, linkId: linkId})
 
         this.removeLink(linkId)
+        this.$store.commit('reconstructPipelines', this.links)
       },
 
       doublePointsOnLeftSideBar: function(){
@@ -129,6 +130,7 @@
           execButton: false,
           processId: processId,
           linksToNextBlock: [],
+          parameters: {}
         }
         this.$store.commit('addBlock', block)
 
@@ -148,28 +150,24 @@
             // blockの反対側のLink情報を消す
             let leftBarBlockId = this.selectedLink.leftBarPoint.blockId
             this.$store.commit('removeLinkToPreviousBlock', leftBarBlockId)
-
             this.removeLink(linkInfo.id)
           }
 
-          // for(let i in block.linkToPreviousBlock){
           if(block.linkToPreviousBlock) {
-            // let linkInfo = block.linkToPreviousBlock[i]
             let linkInfo = block.linkToPreviousBlock
             this.selectedLinkId = linkInfo.id
 
             // blockの反対側のLink情報を消す
             let rightBarBlockId = this.selectedLink.rightBarPoint.blockId
             this.$store.commit('removeOneLinkFromLinksToNextBlock', {blockId: rightBarBlockId, linkId: linkInfo.id})
-
             this.removeLink(linkInfo.id)
           }
         } catch(e){
-          // TODO: エラー処理
           console.log(e)
         }
 
         this.$store.commit('removeBlock', blockId)
+        this.$store.commit('reconstructPipelines', this.links)
 
       },
 
@@ -312,6 +310,10 @@
               return
             }
 
+            if(this.doesThisLinkMakeLoop()){
+
+            }
+
             // TODO: ループが形成されてしまう場合、リンクを消す
             this.selectedPointType = point.pointType
             this.dragging = "secondPointMove"
@@ -322,6 +324,7 @@
             this.selectedLink[this.selectedPointType].display = true
 
             this.updateLinkOfBlock() // this.selectedLink.leftBarPoint.blockId, this.selectedLink.rightBarPoint.blockId
+            this.$store.commit('reconstructPipelines', this.links)
           }
           return
         }
@@ -360,8 +363,11 @@
 
       },
 
+      doesThisLinkMakeLoop: function(){
+        return false
+      },
+
       updateLinkOfBlock: function(){
-        // sotre モジュールに委譲
         let rightBarBlockId = this.selectedLink.rightBarPoint.blockId
         let leftBarBlockId     = this.selectedLink.leftBarPoint.blockId
         let rightBarBlockPathEdge
@@ -375,7 +381,6 @@
           rightBarBlockPathEdge = 'pathEnd'
         }
 
-        // TODO: linkId追加
         this.$store.commit('updateLinksToNextBlock', {blockId: rightBarBlockId, linkId: this.selectedLinkId, pathEdge: rightBarBlockPathEdge})
         this.$store.commit('updateLinkToPreviousBlock', {blockId: leftBarBlockId, linkId: this.selectedLinkId, pathEdge: leftBarBlockPathEdge})
 

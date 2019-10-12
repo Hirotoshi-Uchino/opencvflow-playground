@@ -16,7 +16,7 @@ let blocks = [
     x: 20,
     y: 30,
     linksToNextBlock: [],
-    // linkToPreviousBlock: [],
+    parameters: {}
   },
   {
     blockId: 2,
@@ -26,7 +26,8 @@ let blocks = [
     x: 120,
     y: 30,
     linksToNextBlock: [],
-    // linkToPreviousBlock: [],
+    parameters: {}
+    // linkToPreviousBlock: {} // Link 作成時にこの要素が追加される。 (Input Block以外)
   },
   {
     blockId: 3,
@@ -36,7 +37,7 @@ let blocks = [
     x: 220,
     y: 30,
     linksToNextBlock: [],
-    // linkToPreviousBlock: [],
+    parameters: {}
   },
   {
     blockId: 4,
@@ -46,16 +47,43 @@ let blocks = [
     x: 320,
     y: 30,
     linksToNextBlock: [],
-    // linkToPreviousBlock: [],
+    parameters: {}
   },
 ]
 
+
+// ===============
+// pipelines の仕様↓ ※ pipelineId は、pipelineの終点のblockIdと一致させる
+// [
+//   {
+//     pipelineId: lastBlockId,
+//     pipeline:[
+//       {
+//         processId: processId
+//         parameters: {}
+//       },
+//       {
+//         processId: processId
+//         parameters: {}
+//       },
+//      ︙
+//      ],
+//      imgFile: {} // BASE64? // URLでもよいか
+//  pipelineId: [...]
+//  ︙
+// ]
+// ===============
+
+function isInputBlock(block){
+  return block.processId === 0
+}
 
 export default new Vuex.Store({
 // export const store = new Vuex.Store({
   state: {
     // blocks: {},
     blocks: blocks,
+    pipelines: [],
     links: [],
     nextBlockId: 5,
     nextLinkId: 1
@@ -107,7 +135,52 @@ export default new Vuex.Store({
       if(index >= 0) {
         selectedBlock.linksToNextBlock.splice(index, 1)
       }
-    }
+    },
+
+    reconstructPipelines(state, links) {
+      // pipeline初期化
+      state.pipelines = []
+      for(let i in state.blocks) {
+        let block = state.blocks[i]
+        block.execButton =false;
+
+        if (isInputBlock(block)) continue
+
+        // pipelineの器作成
+        let pipelineInfo = {pipelineId: block.blockId, pipeline: [], imgFile: null}
+
+        let process = {
+          processId: block.processId,
+          parameters: block.parameters
+        }
+        pipelineInfo.pipeline.push(process)
+
+        let pipelineComplete = false
+        // 1つのBlockIdからpreviousBlockにたどっていく
+        while (block.linkToPreviousBlock) {
+          let linkId          = block.linkToPreviousBlock.id
+          let selectedLink    = links.find(link => link.id === linkId)
+          let previousBlockId = selectedLink.rightBarPoint.blockId
+
+          block = state.blocks.find(block => block.blockId === previousBlockId)
+
+          let process = {
+            processId: block.processId,
+            parameters: block.parameters
+          }
+
+          pipelineInfo.pipeline.push(process)
+          // たどっていった先にInputがあればpipeline完成
+          pipelineComplete = isInputBlock(block)
+        }
+
+        if(pipelineComplete){
+          state.pipelines.push(pipelineInfo)
+          state.blocks[i].execButton = true
+        }
+
+      }
+    },
 
 
   },
@@ -126,6 +199,12 @@ export default new Vuex.Store({
         return state.blocks.find(block => block.blockId === blockId)
       }
     },
+
+    getPipeLine: function(state) {
+      return function(pipelineId){
+        return state.pipelines.find(pipeline => pipeline.pipelineId === pipelineId)
+      }
+    }
   },
 
   // modules,

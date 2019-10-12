@@ -150,6 +150,7 @@ export default new Vuex.Store({
         let pipelineInfo = {pipelineId: block.blockId, pipeline: [], imgFile: null}
 
         let process = {
+          blockId: block.blockId,
           processId: block.processId,
           parameters: block.parameters
         }
@@ -165,6 +166,7 @@ export default new Vuex.Store({
           block = state.blocks.find(block => block.blockId === previousBlockId)
 
           let process = {
+            blockId: block.blockId,
             processId: block.processId,
             parameters: block.parameters
           }
@@ -175,6 +177,7 @@ export default new Vuex.Store({
         }
 
         if(pipelineComplete){
+          pipelineInfo.pipeline = pipelineInfo.pipeline.reverse() // 逆から順にpipelineを作成したので通常の順に戻す
           state.pipelines.push(pipelineInfo)
           state.blocks[i].execButton = true
         }
@@ -200,7 +203,7 @@ export default new Vuex.Store({
       }
     },
 
-    getPipeLine: function(state) {
+    getPipeline: function(state) {
       return function(pipelineId){
         return state.pipelines.find(pipeline => pipeline.pipelineId === pipelineId)
       }

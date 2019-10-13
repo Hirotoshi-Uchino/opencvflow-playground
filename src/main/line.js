@@ -1,3 +1,5 @@
+// TODO: renderer 配下に移動
+
 export default function closestPoint(pathNode, point) {
   // 参考 ============================================================
   // https://gist.github.com/mbostock/8027637#file-index-html-L68

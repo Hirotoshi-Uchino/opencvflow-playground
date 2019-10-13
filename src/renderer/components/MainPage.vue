@@ -8,17 +8,20 @@
         </span>
         <span class="nav-group-item">
           <span class="icon icon-mouse"></span>
-        <br>
         <router-link to="/svg_canvas">SVGによるCanvasお試しページ</router-link>
         <br>
         <br>
         <router-link to="/svg_page">SVG全体作成ページ</router-link>
         <br>
-        <router-link to="/custom_drag_drop">自作ドラッグアンドドロップのお試しページ</router-link>
+        <!--<span class="nav-group-item">-->
+        <span class="icon icon-list"></span>
+          <router-link to="/modal_page">モーダル表示お試しページ</router-link>
         </span>
+        <router-link to="/custom_drag_drop">自作ドラッグアンドドロップのお試しページ</router-link>
+        <!--</span>-->
         <span class="nav-group-item">
           <span class="icon icon-mouse"></span>
-        <router-link to="/konva_drag_drop">自作(Konva)ドラッグアンドドロップのお試しページ</router-link>
+          <router-link to="/konva_drag_drop">自作(Konva)ドラッグアンドドロップのお試しページ</router-link>
         </span>
         <span class="nav-group-item">
         <span class="icon icon-mouse"></span>

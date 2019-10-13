@@ -61,6 +61,11 @@ export default new Router({
       component: require('@/components/templates/SvgPageTemplate').default
     },
     {
+      path: '/modal_page',
+      name: 'modal_page',
+      component: require('@/components/ModalPage').default
+    },
+    {
       path: '*',
       redirect: '/'
     }

@@ -9,7 +9,9 @@
         :x="x"
         :y="y"
         @handleRightClick="handleRightClick"
-        @blockSelected="startDrag">
+        @blockSelected="startDrag"
+        @handleDoubleClick="handleDoubleClick"
+    >
     </ocvf-tile>
     <ocvf-right-side-bar :x="x" :y="y" @addPointRight="addPoint" ></ocvf-right-side-bar>
   </g>
@@ -69,6 +71,14 @@
 
       handleRightClick: function(ev, blockId){
         this.$emit("removeBlock", ev, blockId)
+      },
+
+      handleDoubleClick: function(){
+        if(this.processId === 0) {
+          this.$emit('displayFileInput', this.blockId, this.processId)
+        } else {
+          this.$emit('displayParameterSetting', this.blockId, this.processId)
+        }
       }
 
     }

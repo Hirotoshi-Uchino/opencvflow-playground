@@ -11,6 +11,8 @@
         @blockSelected="startDragBlock"
         @addLink="addLink"
         @removeBlock="removeBlock"
+        @displayFileInput="displayFileInput"
+        @displayParameterSetting="displayParameterSetting"
     />
     <OcvfLink
         v-for="link in links"
@@ -337,6 +339,7 @@
       },
 
       doesThisLinkMakeLoop: function(){
+        // TODO
         return false
       },
 
@@ -358,6 +361,16 @@
         this.$store.commit('updateLinkToPreviousBlock', {blockId: leftBarBlockId, linkId: this.selectedLinkId, pathEdge: leftBarBlockPathEdge})
 
       },
+
+      displayParameterSetting: function(blockId, processId){
+        console.log('displayParameterSetting')
+        console.log(blockId + ' : ' + processId)
+      },
+
+      displayFileInput: function(blockId, processId){
+        console.log('displayFileInput')
+        console.log(blockId + ' : ' + processId)
+      }
 
     }
 

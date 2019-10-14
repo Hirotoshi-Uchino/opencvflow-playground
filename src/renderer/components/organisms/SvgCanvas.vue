@@ -1,41 +1,43 @@
 <template>
-  <svg @pointermove="onPointerMove" @pointerup="stopDrag" @pointerdown="onPointerDown">
-    <OcvfBlock
-        v-for="block in blocks"
-        :block-id="block.blockId"
-        :icon-label="block.iconLabel"
-        :x="block.x" :y="block.y"
-        :dragging="dragging"
-        :exec-button="block.execButton"
-        :process-id="block.processId"
-        @blockSelected="startDragBlock"
-        @addLink="addLink"
-        @removeBlock="removeBlock"
-        @displayFileInput="displayFileInput"
-        @displayParameterSetting="displayParameterSetting"
-    />
-    <OcvfLink
-        v-for="link in links"
-        :link-info="link"
-        @removeLink="removeLinkWithBlock"
-    >
-    </OcvfLink>
-  </svg>
+  <div>
+    <svg @pointermove="onPointerMove" @pointerup="stopDrag" @pointerdown="onPointerDown">
+      <OcvfBlock
+          v-for="block in blocks"
+          :block-id="block.blockId"
+          :icon-label="block.iconLabel"
+          :x="block.x" :y="block.y"
+          :dragging="dragging"
+          :exec-button="block.execButton"
+          :process-id="block.processId"
+          @blockSelected="startDragBlock"
+          @addLink="addLink"
+          @removeBlock="removeBlock"
+          @displayFileInput="displayFileInput"
+          @displayParameterSetting="displayParameterSetting"
+      />
+      <OcvfLink
+          v-for="link in links"
+          :link-info="link"
+          @removeLink="removeLinkWithBlock"
+      />
 
+    </svg>
+    <OcvfFileInputDialog id="input-dialog"/>
+  </div>
 </template>
 
 <script>
 
-  import OcvfButton from '../atoms2/OcvfButton'
   import OcvfBlock from "../moleculesSVG/OcvfBlock"
   import OcvfLink from "../moleculesSVG/OcvfLink"
+  import OcvfFileInputDialog from "./OcvfFileInputDialog"
   import closestPoint from "../../../main/line";
 
   export default {
     name: "SvgCanvas",
 
     components: {
-      OcvfButton,
+      OcvfFileInputDialog,
       OcvfBlock,
       OcvfLink
     },
@@ -67,16 +69,16 @@
     },
 
     methods: {
-      removeLink: function(linkId) {
+      removeLink: function (linkId) {
         let index = this.links.findIndex(link => link.id === linkId)
-        if(index >= 0) {
+        if (index >= 0) {
           this.links.splice(index, 1)
         }
       },
 
-      removeLinkWithBlock: function(linkId){
+      removeLinkWithBlock: function (linkId) {
         let link = this.links.find(link => link.id === linkId)
-        let leftBarBlockId  = link.leftBarPoint.blockId
+        let leftBarBlockId = link.leftBarPoint.blockId
         let rightBarBlockId = link.rightBarPoint.blockId
 
         this.$store.commit('removeLinkToPreviousBlock', leftBarBlockId)
@@ -86,7 +88,7 @@
         this.$store.commit('reconstructPipelines', this.links)
       },
 
-      doublePointsOnLeftSideBar: function(){
+      doublePointsOnLeftSideBar: function () {
         let leftBarBlockId = this.selectedLink.leftBarPoint.blockId;
         let linksOnLeftSidebar = this.links.filter((link) => {
           return link.leftBarPoint.blockId === leftBarBlockId
@@ -111,13 +113,13 @@
 
       },
 
-      removeBlock: function(ev, blockId){
+      removeBlock: function (ev, blockId) {
         // blockに紐づくLinkを消去
         try {
           let block = this.$store.getters.getBlock(this.selectedBlockId)
 
           console.log('removeBlock')
-          for(let i in block.linksToNextBlock){
+          for (let i in block.linksToNextBlock) {
             console.log(i)
             let linkInfo = block.linksToNextBlock[i]
             this.selectedLinkId = linkInfo.id
@@ -128,7 +130,7 @@
             this.removeLink(linkInfo.id)
           }
 
-          if(block.linkToPreviousBlock) {
+          if (block.linkToPreviousBlock) {
             let linkInfo = block.linkToPreviousBlock
             this.selectedLinkId = linkInfo.id
 
@@ -137,7 +139,7 @@
             this.$store.commit('removeOneLinkFromLinksToNextBlock', {blockId: rightBarBlockId, linkId: linkInfo.id})
             this.removeLink(linkInfo.id)
           }
-        } catch(e){
+        } catch (e) {
           console.log(e)
         }
 
@@ -176,7 +178,7 @@
           this.$store.commit('updateBlockPosition', {blockId: this.selectedBlockId, x: x, y: y})
 
           // Linkも同時に動かす
-          for(let i in block.linksToNextBlock){
+          for (let i in block.linksToNextBlock) {
             let linkInfo = block.linksToNextBlock[i]
             this.selectedLinkId = linkInfo.id
             let pathEdge = linkInfo.pathEdge
@@ -189,7 +191,7 @@
           }
 
           // for(let i in block.linkToPreviousBlock){
-          if(block.linkToPreviousBlock) {
+          if (block.linkToPreviousBlock) {
             // let linkInfo = block.linkToPreviousBlock[i]
             let linkInfo = block.linkToPreviousBlock
             this.selectedLinkId = linkInfo.id
@@ -218,15 +220,15 @@
           let x = ev.offsetX - this.dragOffset.x
           let y = ev.offsetY - this.dragOffset.y
           // ポインタをpath上からずらしてイベント検知しやすくする
-          if(this.selectedLink.pathStart.x < x){
+          if (this.selectedLink.pathStart.x < x) {
             this.selectedLink.pathEnd.x = x - 3
-          } else{
+          } else {
             this.selectedLink.pathEnd.x = x + 3
           }
           this.selectedLink.pathEnd.y = y
         }
 
-        if (this.dragging === "secondPointMove"){
+        if (this.dragging === "secondPointMove") {
           let pathNode = this.selectedLink[this.selectedPointType].on
           let x = ev.offsetX - this.dragOffset.x;
           let y = ev.offsetY - this.dragOffset.y;
@@ -240,7 +242,7 @@
 
       },
 
-      onPointerDown(ev){
+      onPointerDown(ev) {
         // キャンバス上のなにもない部分を押したとき、作成中のリンクを消す
         if (this.dragging === "drawingPath") this.removeLink(this.selectedLinkId)
       },
@@ -260,18 +262,18 @@
       },
 
       addLink(ev, point) {
-        if(this.dragging === "drawingPath"){
-          if(this.selectedPointType === point.pointType){
+        if (this.dragging === "drawingPath") {
+          if (this.selectedPointType === point.pointType) {
             // サイドバーの種類が同じ場合、linkを消す
             this.selectedPointType = ""
             this.removeLink(this.selectedLinkId)
 
-          } else{
+          } else {
             this.selectedPointType = point.pointType
             this.selectedLink[this.selectedPointType].blockId = point.blockId
 
             // 同じブロックの場合、リンクを消す
-            if(this.selectedLink.leftBarPoint.blockId === this.selectedLink.rightBarPoint.blockId){
+            if (this.selectedLink.leftBarPoint.blockId === this.selectedLink.rightBarPoint.blockId) {
               // linkを消す
               this.selectedPointType = ""
               this.removeLink(this.selectedLinkId)
@@ -279,13 +281,13 @@
             }
 
             // leftSidebarにリンクが2つつながる場合、リンクを消す (同じリンクの場合を包含)
-            if(this.doublePointsOnLeftSideBar()){
+            if (this.doublePointsOnLeftSideBar()) {
               this.selectedPointType = ""
               this.removeLink(this.selectedLinkId)
               return
             }
 
-            if(this.doesThisLinkMakeLoop()){
+            if (this.doesThisLinkMakeLoop()) {
 
             }
 
@@ -316,10 +318,10 @@
 
         link[point.pointType].x = point.x
         link[point.pointType].y = point.y
-        link.pathStart.x        = point.x
-        link.pathStart.y        = point.y
-        link.pathEnd.x          = point.x
-        link.pathEnd.y          = point.y
+        link.pathStart.x = point.x
+        link.pathStart.y = point.y
+        link.pathEnd.x = point.x
+        link.pathEnd.y = point.y
         link[point.pointType].blockId = point.blockId
         link[point.pointType].on = point.on // sidebarの要素
         link[point.pointType].display = true
@@ -338,18 +340,18 @@
 
       },
 
-      doesThisLinkMakeLoop: function(){
+      doesThisLinkMakeLoop: function () {
         // TODO
         return false
       },
 
-      updateLinkOfBlock: function(){
+      updateLinkOfBlock: function () {
         let rightBarBlockId = this.selectedLink.rightBarPoint.blockId
-        let leftBarBlockId     = this.selectedLink.leftBarPoint.blockId
+        let leftBarBlockId = this.selectedLink.leftBarPoint.blockId
         let rightBarBlockPathEdge
         let leftBarBlockPathEdge
 
-        if(this.selectedPointType === 'leftBarPoint'){
+        if (this.selectedPointType === 'leftBarPoint') {
           leftBarBlockPathEdge = 'pathEnd'
           rightBarBlockPathEdge = 'pathStart'
         } else {
@@ -357,19 +359,29 @@
           rightBarBlockPathEdge = 'pathEnd'
         }
 
-        this.$store.commit('updateLinksToNextBlock', {blockId: rightBarBlockId, linkId: this.selectedLinkId, pathEdge: rightBarBlockPathEdge})
-        this.$store.commit('updateLinkToPreviousBlock', {blockId: leftBarBlockId, linkId: this.selectedLinkId, pathEdge: leftBarBlockPathEdge})
+        this.$store.commit('updateLinksToNextBlock', {
+          blockId: rightBarBlockId,
+          linkId: this.selectedLinkId,
+          pathEdge: rightBarBlockPathEdge
+        })
+        this.$store.commit('updateLinkToPreviousBlock', {
+          blockId: leftBarBlockId,
+          linkId: this.selectedLinkId,
+          pathEdge: leftBarBlockPathEdge
+        })
 
       },
 
-      displayParameterSetting: function(blockId, processId){
+      displayParameterSetting: function (blockId, processId) {
         console.log('displayParameterSetting')
         console.log(blockId + ' : ' + processId)
       },
 
-      displayFileInput: function(blockId, processId){
+      displayFileInput: function (blockId, processId) {
         console.log('displayFileInput')
         console.log(blockId + ' : ' + processId)
+        let dialog = document.getElementById('input-dialog')
+        dialog.showModal()
       }
 
     }
@@ -378,8 +390,8 @@
 </script>
 
 <style scoped>
- svg{
-   width: 100%;
-   height: 100%;
- }
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 </style>

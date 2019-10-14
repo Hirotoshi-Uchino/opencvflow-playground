@@ -6,7 +6,7 @@
 
 <script>
 
-  import closestPoint from '../../../main/line'
+  import closestPoint from '../../../../main/line'
 
   export default {
     name: "OcvfLeftSideBar",

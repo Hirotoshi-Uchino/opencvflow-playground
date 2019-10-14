@@ -1,26 +1,31 @@
 <template>
-  <div>
-    <OcvfButton
-        v-for="process in processDefinitions"
-        :name="process.name"
-        :label="process.label"
-        :icon-label="process.icon"
-        :process-id="process.processId"
-        @click="addBlock"
-    >
-      {{process.label}}
-    </OcvfButton>
+  <div class="pane-sm sidebar">
+    <nav class="nav-group">
+      <h5 class="nav-group-title">処理を選択</h5>
+
+      <OcvfProcessListItem
+          v-for="process in processDefinitions"
+          :label="process.label"
+          :process-id="process.processId"
+          @addBlock="addBlock"
+      />
+
+      <!--TODO: いずれ消す-->
+      <h5 class="nav-group-title">その他</h5>
+      <a class="nav-group-item" href="/">ホームへ</a>
+    </nav>
   </div>
+
 </template>
 
 <script>
-  import OcvfButton from "../atoms2/OcvfButton"
+  import OcvfProcessListItem from "../moleculesSVG/OcvfProcessListItem"
 
   export default {
-    name: "BlockSelector",
+    name: "ProcessSelector",
 
-    components: {
-      OcvfButton,
+    components :{
+      OcvfProcessListItem
     },
 
     props:{
@@ -30,11 +35,11 @@
     },
 
     methods: {
-      addBlock: function(ev, iconLabel, processId){
-        this.$emit('addBlock', ev, iconLabel, processId)
+      addBlock: function(processId){
+        console.log(processId)
+        this.$emit('addBlock', processId)
       }
     }
-
 
   }
 </script>

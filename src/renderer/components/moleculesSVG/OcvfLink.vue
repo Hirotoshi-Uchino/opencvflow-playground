@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import OcvfPath from '../atomsSVG/OcvfPath'
+  import OcvfPath from '../atomsSVG/canvas/OcvfPath'
 
   export default {
     name: "OcvfLink",

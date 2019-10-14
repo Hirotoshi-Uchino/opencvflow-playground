@@ -18,10 +18,10 @@
 </template>
 
 <script>
-  import OcvfTile from "../atomsSVG/OcvfTile"
-  import OcvfRightSideBar from "../atomsSVG/OcvfRightSideBar"
-  import OcvfLeftSideBar from "../atomsSVG/OcvfLeftSideBar"
-  import OcvfExecButton from "../atomsSVG/OcvfExecButton"
+  import OcvfTile from "../atomsSVG/canvas/OcvfTile"
+  import OcvfRightSideBar from "../atomsSVG/canvas/OcvfRightSideBar"
+  import OcvfLeftSideBar from "../atomsSVG/canvas/OcvfLeftSideBar"
+  import OcvfExecButton from "../atomsSVG/canvas/OcvfExecButton"
 
   export default {
     name: "OcvfBlock",

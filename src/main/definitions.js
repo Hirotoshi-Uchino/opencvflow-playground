@@ -1,7 +1,7 @@
 export let processDefinitions = [
   {
     processId: 0,
-    label: 'ファイル入力',
+    label: '画像ファイル入力',
     name: 'Input',
     icon: 'In'
   },

@@ -9,6 +9,7 @@ import router from './router'
 import store from './store'
 
 import 'photon/dist/css/photon.css'
+// const Photon = require("electron-photon");
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'))
 Vue.use(Vuetify);

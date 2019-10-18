@@ -16,7 +16,11 @@ let blocks = [
     x: 20,
     y: 30,
     linksToNextBlock: [],
-    parameters: {}
+    parameters: {
+      imageFileName: '',
+      imageFilePath: '',
+      imageData: '',
+    }
   },
   {
     blockId: 2,
@@ -135,6 +139,16 @@ export default new Vuex.Store({
       if(index >= 0) {
         selectedBlock.linksToNextBlock.splice(index, 1)
       }
+    },
+
+    inputParameters(state, info){
+      let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
+      for(let i in info.parameters){
+        selectedBlock.parameters[i] = info.parameters[i]
+      }
+      // 下の方式では、参照が途切れてpipelinesに自動反映されない
+      // selectedBlock.parameters = info.parameters
+      // TODO: Fileの場合とそれ以外で切り替え
     },
 
     reconstructPipelines(state, links) {

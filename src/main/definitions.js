@@ -5,6 +5,7 @@ export let processDefinitions = [
     name: 'Input',
     icon: 'In',
     parameters: {
+      imageFileName: '',
       imageFilePath: '',
       imageData: '',
     }

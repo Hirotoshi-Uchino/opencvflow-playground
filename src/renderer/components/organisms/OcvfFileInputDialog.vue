@@ -1,5 +1,8 @@
 <template>
-  <dialog>
+  <dialog
+    :file-parameters="fileParameters"
+    :block-id="blockId"
+  >
     <form method="dialog">
       <header class="toolbar toolbar-header">
         <h1 class="title">画像ファイル入力</h1>
@@ -9,7 +12,7 @@
         <label for="select-file">
           <span class="btn btn-default">ファイルを選択</span>
           <span style="text-align: center">
-            {{imageFileName}}
+            {{fileParameters.imageFileName}}
           </span>
           <input
               type="file"
@@ -19,28 +22,39 @@
           >
         </label>
       </div>
-      <img :src="imageData" alt="">
+      <img :src="fileParameters.imageData" alt="">
 
       <footer class="toolbar toolbar-footer">
-        <span class="btn btn-default reset-btn">リセット</span>
-        <button class="btn btn-primary pull-right complete-btn">完了</button>
+        <span class="btn btn-default reset-btn" @click="resetParameters">リセット</span>
+        <button class="btn btn-primary pull-right complete-btn" @click="inputParameters">完了</button>
       </footer>
     </form>
   </dialog>
 </template>
 
 <script>
-  // TODO: input parameter to block
+  import Vue from 'vue'
+
   export default {
     name: "OcvfFileInputDialog",
 
-    data: function(){
-      return {
-        imageFileName: '',
-        imageFilePath: '',
-        imageData: ''
+    // TODO: props のfileParameterではなく、store の blocksを使える
+
+    props: {
+      fileParameters:{
+        type: Object
+      },
+      blockId: {
+        type: Number
       }
     },
+
+    computed: {
+      thisblock: function() {
+        return this.$store.getters.getBlock(this.blockId)
+      }
+    },
+
 
     methods: {
       setFileEvent: function(){
@@ -53,19 +67,38 @@
             let file = evt.target.files[0];
             let reader = new FileReader();
 
-            _vm.imageFileName = file.name
-            _vm.imageFilePath = file.path
+            _vm.fileParameters.imageFileName = file.name
+            _vm.fileParameters.imageFilePath = file.path
             reader.readAsDataURL(file);
             reader.onload = function(e) {
-              _vm.imageData = e.target.result
+              _vm.fileParameters.imageData = e.target.result
             };
           } catch (e) {
             console.log('input File Error')
             console.log(e)
           }
         }, false)
+      },
+
+      inputParameters: function(){
+        let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
+        // let info = {blockId: this.blockId, parameters: this.fileParameters}
+        let info = {blockId: this.blockId, parameters: copiedFileParameters}
+        this.$store.commit('inputParameters', info)
+      },
+
+      resetParameters: function(){
+        for(let i in this.fileParameters){
+          this.fileParameters[i] = ''
+        }
+        let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
+        // let info = {blockId: this.blockId, parameters: this.fileParameters}
+        let info = {blockId: this.blockId, parameters: copiedFileParameters}
+        this.$store.commit('inputParameters', info)
       }
+
     },
+
 
   }
 </script>

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -13,11 +13,29 @@ const mainURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
+
+let {PythonShell} = require('python-shell')
+
+ipcMain.on('message', function(ev, arg){
+  console.log(arg)
+
+  let options = {
+    pythonPath: './venv/bin/python'
+  }
+
+  PythonShell.run('./backend/sample.py', options, function(err, result){
+    console.log(result);
+    ev.sender.send('reply', result)
+  })
+
+})
+
+
 function createWindow () {
   /**
    * Initial window options
    */
-  const subpy = require('child_process').spawn('./venv/bin/python', ['./backend/api.py']);
+  // const subpy = require('child_process').spawn('./venv/bin/python', ['./backend/api.py']);
   const rp = require('request-promise');
 
   const openWindow = function () {
@@ -34,7 +52,7 @@ function createWindow () {
 
     mainWindow.on('closed', () => {
       mainWindow = null;
-      subpy.kill('SIGINT');
+      // subpy.kill('SIGINT');
     });
   };
 

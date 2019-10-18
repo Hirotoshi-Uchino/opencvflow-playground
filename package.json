@@ -61,6 +61,7 @@
     "jquery": "^3.4.1",
     "konva": "^4.0.9",
     "photon": "git+https://github.com/connors/photon.git",
+    "python-shell": "^1.0.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "v-drag": "^2.1.3",

@@ -75,7 +75,7 @@
 
       handleDoubleClick: function(){
         if(this.processId === 0) {
-          this.$emit('displayFileInput', this.blockId, this.processId)
+          this.$emit('displayFileInput', this.blockId)
         } else {
           this.$emit('displayParameterSetting', this.blockId, this.processId)
         }

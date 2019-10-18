@@ -20,6 +20,11 @@
 
 <script>
   import OcvfProcessListItem from "../moleculesSVG/OcvfProcessListItem"
+  import {ipcRenderer} from 'electron'
+
+  ipcRenderer.on('reply', function(ev, arg){
+    console.log(arg)
+  })
 
   export default {
     name: "ProcessSelector",
@@ -37,6 +42,10 @@
     methods: {
       addBlock: function(processId){
         console.log(processId)
+        ipcRenderer.send('message', 'ping')
+
+
+
         this.$emit('addBlock', processId)
       }
     }

@@ -26,6 +26,7 @@
         id="input-dialog"
         :file-parameters="nowFileParameters"
         :block-id="nowInputFileBlockId"
+        @reconstructPipelines="reconstructPipelines"
     />
   </div>
 </template>
@@ -398,6 +399,10 @@
 
         let dialog = document.getElementById('input-dialog')
         dialog.showModal()
+      },
+
+      reconstructPipelines: function(){
+        this.$store.commit('reconstructPipelines', this.links)
       }
 
     }

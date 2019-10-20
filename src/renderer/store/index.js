@@ -140,7 +140,7 @@ export default new Vuex.Store({
 
     inputFilePath(state, info){
       let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
-      selectedBlock.imageFilePath = info.imageFilePath
+      selectedBlock.parameters.imageFilePath = info.imageFilePath
     },
 
     reconstructPipelines(state, links) {

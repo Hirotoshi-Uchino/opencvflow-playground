@@ -26,7 +26,7 @@
 
       <footer class="toolbar toolbar-footer">
         <span class="btn btn-default reset-btn" @click="resetParameters">リセット</span>
-        <button class="btn btn-primary pull-right complete-btn" @click="inputFilePath">完了</button>
+        <button class="btn btn-primary pull-right complete-btn" @click="inputFileComplete">完了</button>
       </footer>
     </form>
   </dialog>
@@ -75,6 +75,12 @@
             console.log(e)
           }
         }, false)
+      },
+
+
+      inputFileComplete: function(){
+        this.inputFilePath()
+        this.$emit('reconstructPipelines') // 無駄が多いがこれがわかりやすいので採用
       },
 
       inputFilePath: function(){

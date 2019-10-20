@@ -391,11 +391,6 @@
         console.log('displayFileInput')
         let block = this.$store.getters.getBlock(blockId)
         this.nowInputFileBlockId             = blockId
-        // let copiedFileParameters = Vue.util.extend({}, block.parameters)
-        // this.nowFileParameters.imageFileName = block.parameters.imageFileName
-        // this.nowFileParameters.imageFilePath = block.parameters.imageFilePath
-        // this.nowFileParameters.imageData     = block.parameters.imageData
-
 
         this.nowFileParameters.imageFileName = block.parameters.imageFileName
         this.nowFileParameters.imageFilePath = block.parameters.imageFilePath

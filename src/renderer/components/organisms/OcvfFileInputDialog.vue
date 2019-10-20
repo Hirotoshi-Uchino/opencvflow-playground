@@ -26,7 +26,7 @@
 
       <footer class="toolbar toolbar-footer">
         <span class="btn btn-default reset-btn" @click="resetParameters">リセット</span>
-        <button class="btn btn-primary pull-right complete-btn" @click="inputParameters">完了</button>
+        <button class="btn btn-primary pull-right complete-btn" @click="inputFilePath">完了</button>
       </footer>
     </form>
   </dialog>
@@ -38,8 +38,6 @@
   export default {
     name: "OcvfFileInputDialog",
 
-    // TODO: props のfileParameterではなく、store の blocksを使える
-
     props: {
       fileParameters:{
         type: Object
@@ -49,12 +47,11 @@
       }
     },
 
-    computed: {
-      thisblock: function() {
-        return this.$store.getters.getBlock(this.blockId)
-      }
-    },
-
+    // computed: {
+    //   thisblock: function() {
+    //     return this.$store.getters.getBlock(this.blockId)
+    //   }
+    // },
 
     methods: {
       setFileEvent: function(){
@@ -80,11 +77,10 @@
         }, false)
       },
 
-      inputParameters: function(){
+      inputFilePath: function(){
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        // let info = {blockId: this.blockId, parameters: this.fileParameters}
-        let info = {blockId: this.blockId, parameters: copiedFileParameters}
-        this.$store.commit('inputParameters', info)
+        let info = {blockId: this.blockId, imageFilePath: copiedFileParameters.imageFilePath}
+        this.$store.commit('inputFilePath', info)
       },
 
       resetParameters: function(){
@@ -92,7 +88,6 @@
           this.fileParameters[i] = ''
         }
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        // let info = {blockId: this.blockId, parameters: this.fileParameters}
         let info = {blockId: this.blockId, parameters: copiedFileParameters}
         this.$store.commit('inputParameters', info)
       }

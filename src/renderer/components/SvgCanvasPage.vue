@@ -52,7 +52,7 @@
   import OcvfButton from './atoms2/OcvfButton'
   import OcvfBlock from "./moleculesSVG/OcvfBlock"
   import OcvfLink from "./moleculesSVG/OcvfLink"
-  import {processDefinitions} from "../../main/definitions"
+  import {processDefinitions} from "../configs/processDefinitions"
   import closestPoint from "../../main/line";
 
   export default {

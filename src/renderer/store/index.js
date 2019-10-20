@@ -16,11 +16,7 @@ let blocks = [
     x: 20,
     y: 30,
     linksToNextBlock: [],
-    parameters: {
-      imageFileName: '',
-      imageFilePath: '',
-      imageData: '',
-    }
+    parameters: {}
   },
   {
     blockId: 2,
@@ -35,7 +31,7 @@ let blocks = [
   },
   {
     blockId: 3,
-    iconLabel: 'GF',
+    iconLabel: 'Fi',
     processId: 3,
     execButton: false,
     x: 220,
@@ -45,7 +41,7 @@ let blocks = [
   },
   {
     blockId: 4,
-    iconLabel: 'Po',
+    iconLabel: 'Gr',
     processId: 4,
     execButton: false,
     x: 320,
@@ -61,18 +57,20 @@ let blocks = [
 // [
 //   {
 //     pipelineId: lastBlockId,
+//     imageFilePath: "", // 画像ファイルのURL
 //     pipeline:[
 //       {
 //         processId: processId
-//         parameters: {}
+//         processDetail: processDetail // 実際に実行されるプロセス名 (二値化なら、Binary or ToZero or Otsuなど)
+//         parameters: {...}
 //       },
 //       {
 //         processId: processId
-//         parameters: {}
+//         processDetail: processDetail //
+//         parameters: {...}
 //       },
 //      ︙
 //      ],
-//      imgFile: {} // BASE64? // URLでもよいか
 //  pipelineId: [...]
 //  ︙
 // ]
@@ -85,7 +83,6 @@ function isInputBlock(block){
 export default new Vuex.Store({
 // export const store = new Vuex.Store({
   state: {
-    // blocks: {},
     blocks: blocks,
     pipelines: [],
     links: [],
@@ -141,14 +138,9 @@ export default new Vuex.Store({
       }
     },
 
-    inputParameters(state, info){
+    inputFilePath(state, info){
       let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
-      for(let i in info.parameters){
-        selectedBlock.parameters[i] = info.parameters[i]
-      }
-      // 下の方式では、参照が途切れてpipelinesに自動反映されない
-      // selectedBlock.parameters = info.parameters
-      // TODO: Fileの場合とそれ以外で切り替え
+      selectedBlock.imageFilePath = info.imageFilePath
     },
 
     reconstructPipelines(state, links) {
@@ -161,7 +153,7 @@ export default new Vuex.Store({
         if (isInputBlock(block)) continue
 
         // pipelineの器作成
-        let pipelineInfo = {pipelineId: block.blockId, pipeline: [], imgFile: null}
+        let pipelineInfo = {pipelineId: block.blockId, pipeline: [], imageFilePath: ''}
 
         let process = {
           blockId: block.blockId,
@@ -173,11 +165,19 @@ export default new Vuex.Store({
         let pipelineComplete = false
         // 1つのBlockIdからpreviousBlockにたどっていく
         while (block.linkToPreviousBlock) {
+
           let linkId          = block.linkToPreviousBlock.id
           let selectedLink    = links.find(link => link.id === linkId)
           let previousBlockId = selectedLink.rightBarPoint.blockId
 
           block = state.blocks.find(block => block.blockId === previousBlockId)
+
+          // たどっていった先にInputがあればpipeline完成
+          if (isInputBlock(block)){
+            pipelineComplete = true
+            pipelineInfo.imageFilePath = block.parameters.imageFilePath
+            break
+          }
 
           let process = {
             blockId: block.blockId,
@@ -186,8 +186,6 @@ export default new Vuex.Store({
           }
 
           pipelineInfo.pipeline.push(process)
-          // たどっていった先にInputがあればpipeline完成
-          pipelineComplete = isInputBlock(block)
         }
 
         if(pipelineComplete){

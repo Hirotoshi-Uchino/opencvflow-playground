@@ -14,14 +14,15 @@ const mainURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 
-let {PythonShell} = require('python-shell')
+import {PythonShell} from 'python-shell'
+
+let options = {
+  pythonPath: './venv/bin/python',
+  mode: 'json'
+}
+
 
 ipcMain.on('message', function(ev, arg){
-  console.log(arg)
-
-  let options = {
-    pythonPath: './venv/bin/python'
-  }
 
   PythonShell.run('./backend/sample.py', options, function(err, result){
     console.log(result);

@@ -19,7 +19,7 @@
   import ProcessSelectorButtons from "../organisms/ProcessSelectorButtons"
   import SvgCanvas from "../organisms/SvgCanvas"
   import ResultPreview from "../organisms/ResultPreview"
-  import {processDefinitions} from "../../../main/definitions"
+  import {processDefinitions} from "../../configs/processDefinitions"
 
   export default {
     name: "SvgPage",
@@ -49,7 +49,7 @@
           execButton: false,
           processId: processId,
           linksToNextBlock: [],
-          parameters: process.parameters
+          parameters: {}
         }
         this.$store.commit('addBlock', block)
 

@@ -71,17 +71,36 @@
 
       },
 
-      getDefaultParameters: function(processId){
-        if(processId === 0){
+      getDefaultParameters: function (processId) {
+        if (processId === 0) {
           console.log(settingDefinitions.Input)
           // settingDefinitionsからの参照を切って初期化しないと勝手に書き換えられる可能性あり
           return Vue.util.extend({}, settingDefinitions.Input)
+
         } else {
-          return {}
+          let processName = processDefinitions.find(process => process.processId === processId).name
+          let settingParameters = Vue.util.extend({}, settingDefinitions[processName])
+          let processDetail = Object.keys(settingParameters)[0] // Binarization なら Binary
+
+          let detailParameters = []
+          for (let i in settingParameters[processDetail]) {
+            let tmp = {
+              paramName: settingParameters[processDetail][i]['paramName'],
+              paramDefault: settingParameters[processDetail][i]['paramDefault']
+            }
+            detailParameters.push(tmp)
+          }
+
+          return {
+            processDetail: processDetail,
+            detailParameters: detailParameters
+          }
+
         }
+
       },
 
-      execPipeline: function(blockId){
+      execPipeline: function (blockId) {
         vm = this
         let pipeline = this.$store.getters.getPipeline(blockId)
 
@@ -95,8 +114,8 @@
       }
 
     }
-
   }
+  // }
 
 
 

@@ -23,6 +23,12 @@
       />
 
     </svg>
+    <OcvfParameterSettingDialog
+        id="parameter-setting-dialog"
+        :process-id="nowProcessId"
+        :block-id="nowProcessBlockId"
+        @reconstructPipelines="reconstructPipelines"
+    />
     <OcvfFileInputDialog
         id="input-dialog"
         :file-parameters="nowFileParameters"
@@ -37,6 +43,7 @@
   import OcvfBlock from "../moleculesSVG/OcvfBlock"
   import OcvfLink from "../moleculesSVG/OcvfLink"
   import OcvfFileInputDialog from "./OcvfFileInputDialog"
+  import OcvfParameterSettingDialog from "./OcvfParameterSettingDialog"
   import closestPoint from "../../../main/line"
   import settingDefinitions from "../../configs/settingDefinitions"
 
@@ -44,6 +51,7 @@
     name: "SvgCanvas",
 
     components: {
+      OcvfParameterSettingDialog,
       OcvfFileInputDialog,
       OcvfBlock,
       OcvfLink
@@ -63,7 +71,10 @@
           y: 0
         },
         nowFileParameters: Vue.util.extend({}, settingDefinitions.Input),
-        nowInputFileBlockId: 0
+        nowInputFileBlockId: 0,
+        nowProcessParameters: {},
+        nowProcessId: 0,
+        nowProcessBlockId: 0
       }
     },
 
@@ -302,7 +313,6 @@
         const link = {
           id: this.$store.getters.getNextLinkId,
           pointType: point.pointType,
-          // path: false,
           leftBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
           rightBarPoint: {x: 0, y: 0, on: "", display: false, blockId: 0},
           pathStart: {x: 0, y: 0},
@@ -365,10 +375,18 @@
 
       },
 
+
       displayParameterSetting: function (blockId, processId) {
+        this.nowProcessBlockId        = blockId
+        this.nowProcessId             = processId
         console.log('displayParameterSetting')
         console.log(blockId + ' : ' + processId)
+        let block = this.$store.getters.getBlock(blockId)
+
+        let dialog = document.getElementById('parameter-setting-dialog')
+        dialog.showModal()
       },
+
 
       displayFileInput: function (blockId) {
         console.log('displayFileInput')
@@ -383,9 +401,11 @@
         dialog.showModal()
       },
 
+
       reconstructPipelines: function(){
         this.$store.commit('reconstructPipelines', this.links)
       },
+
 
       execPipeline: function(blockId){
         this.$emit('execPipeline', blockId)

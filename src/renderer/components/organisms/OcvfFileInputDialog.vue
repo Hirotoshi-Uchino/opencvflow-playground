@@ -47,12 +47,6 @@
       }
     },
 
-    // computed: {
-    //   thisblock: function() {
-    //     return this.$store.getters.getBlock(this.blockId)
-    //   }
-    // },
-
     methods: {
       setFileEvent: function(){
         let _vm = this
@@ -85,8 +79,8 @@
 
       inputFilePath: function(){
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        let info = {blockId: this.blockId, imageFilePath: copiedFileParameters.imageFilePath}
-        this.$store.commit('inputFilePath', info)
+        let info = {blockId: this.blockId, parameters: copiedFileParameters}
+        this.$store.commit('inputFileParameters', info)
       },
 
       resetParameters: function(){
@@ -94,8 +88,8 @@
           this.fileParameters[i] = ''
         }
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        let info = {blockId: this.blockId, imageFilePath: copiedFileParameters.imageFilePath}
-        this.$store.commit('inputFilePath', info)
+        let info = {blockId: this.blockId, parameters: copiedFileParameters}
+        this.$store.commit('inputFileParameters', info)
       }
 
     },

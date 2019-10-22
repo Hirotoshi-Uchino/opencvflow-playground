@@ -73,11 +73,11 @@
 
 
       inputFileComplete: function(){
-        this.inputFilePath()
+        this.inputFileParameters()
         this.$emit('reconstructPipelines') // 無駄が多いがこれがわかりやすいので採用
       },
 
-      inputFilePath: function(){
+      inputFileParameters: function(){
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
         let info = {blockId: this.blockId, parameters: copiedFileParameters}
         this.$store.commit('inputFileParameters', info)
@@ -93,7 +93,6 @@
       }
 
     },
-
 
   }
 </script>

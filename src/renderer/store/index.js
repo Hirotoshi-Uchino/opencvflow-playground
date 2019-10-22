@@ -16,7 +16,11 @@ let blocks = [
     x: 20,
     y: 30,
     linksToNextBlock: [],
-    parameters: {}
+    parameters: {
+      imageFileName: '',
+      imageFilePath: '',
+      imageData: ''
+    }
   },
   {
     blockId: 2,

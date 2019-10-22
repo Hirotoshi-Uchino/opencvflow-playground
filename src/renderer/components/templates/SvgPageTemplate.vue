@@ -20,12 +20,14 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import {ipcRenderer} from 'electron'
   import ProcessSelector from "../organisms/ProcessSelector"
   import ProcessSelectorButtons from "../organisms/ProcessSelectorButtons"
   import SvgCanvas from "../organisms/SvgCanvas"
   import ResultPreview from "../organisms/ResultPreview"
   import {processDefinitions} from "../../configs/processDefinitions"
+  import settingDefinitions from "../../configs/settingDefinitions"
 
   let extReg=/(.*)(?:\.([^.]+$))/;
   let vm;
@@ -54,7 +56,7 @@
     methods: {
       addBlock: function (processId) {
         const process = this.processDefinitions.find(process => process.processId === processId)
-        const nextLabelId = this.$store.getters.getNextBlockId;
+        const nextLabelId = this.$store.getters.getNextBlockId
         const block = {
           blockId: nextLabelId,
           iconLabel: process.icon,
@@ -63,10 +65,20 @@
           execButton: false,
           processId: processId,
           linksToNextBlock: [],
-          parameters: {}
+          parameters: this.getDefaultParameters(processId)
         }
         this.$store.commit('addBlock', block)
 
+      },
+
+      getDefaultParameters: function(processId){
+        if(processId === 0){
+          console.log(settingDefinitions.Input)
+          // settingDefinitionsからの参照を切って初期化しないと勝手に書き換えられる可能性あり
+          return Vue.util.extend({}, settingDefinitions.Input)
+        } else {
+          return {}
+        }
       },
 
       execPipeline: function(blockId){

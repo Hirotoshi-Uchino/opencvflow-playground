@@ -33,11 +33,12 @@
 </template>
 
 <script>
-
+  import Vue from 'vue'
   import OcvfBlock from "../moleculesSVG/OcvfBlock"
   import OcvfLink from "../moleculesSVG/OcvfLink"
   import OcvfFileInputDialog from "./OcvfFileInputDialog"
-  import closestPoint from "../../../main/line";
+  import closestPoint from "../../../main/line"
+  import settingDefinitions from "../../configs/settingDefinitions"
 
   export default {
     name: "SvgCanvas",
@@ -61,11 +62,7 @@
           x: 0,
           y: 0
         },
-        nowFileParameters: {
-          imageFileName: '',
-          imageFilePath: '',
-          imageData: '',
-        },
+        nowFileParameters: Vue.util.extend({}, settingDefinitions.Input),
         nowInputFileBlockId: 0
       }
     },
@@ -106,22 +103,6 @@
           return link.leftBarPoint.blockId === leftBarBlockId
         })
         return linksOnLeftSidebar.length > 1
-
-      },
-
-      addBlock: function (ev, iconLabel, processId) {
-        const nextLabelId = this.$store.getters.getNextBlockId;
-        const block = {
-          blockId: nextLabelId,
-          iconLabel: iconLabel,
-          x: 50,
-          y: 50,
-          execButton: false,
-          processId: processId,
-          linksToNextBlock: [],
-          parameters: {}
-        }
-        this.$store.commit('addBlock', block)
 
       },
 
@@ -394,9 +375,9 @@
         let block = this.$store.getters.getBlock(blockId)
         this.nowInputFileBlockId             = blockId
 
-        this.nowFileParameters.imageFileName = block.parameters.imageFileName
-        this.nowFileParameters.imageFilePath = block.parameters.imageFilePath
-        this.nowFileParameters.imageData     = block.parameters.imageData
+        for(let i in block.parameters){
+          this.nowFileParameters[i] = block.parameters[i]
+        }
 
         let dialog = document.getElementById('input-dialog')
         dialog.showModal()

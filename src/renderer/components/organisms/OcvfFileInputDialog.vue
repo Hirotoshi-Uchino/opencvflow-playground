@@ -5,12 +5,12 @@
   >
     <form method="dialog">
       <header class="toolbar toolbar-header">
-        <h1 class="title">画像ファイル入力</h1>
+        <h1 class="title">Input image</h1>
       </header>
 
       <div id="input-area">
         <label for="select-file">
-          <span class="btn btn-default">ファイルを選択</span>
+          <span class="btn btn-default">Select File</span>
           <span style="text-align: center">
             {{fileParameters.imageFileName}}
           </span>
@@ -18,15 +18,15 @@
               type="file"
               id="select-file"
               @click="setFileEvent"
-              accept="image/png,image/jpge,image/bmp"
+              accept="image/png,image/jpeg,image/bmp"
           >
         </label>
       </div>
       <img :src="fileParameters.imageData" alt="">
 
       <footer class="toolbar toolbar-footer">
-        <span class="btn btn-default reset-btn" @click="resetParameters">リセット</span>
-        <button class="btn btn-primary pull-right complete-btn" @click="inputFileComplete">完了</button>
+        <span class="btn btn-default reset-btn" @click="resetParameters">Reset</span>
+        <button class="btn btn-primary pull-right complete-btn" @click="inputFileComplete">OK</button>
       </footer>
     </form>
   </dialog>
@@ -94,8 +94,8 @@
           this.fileParameters[i] = ''
         }
         let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        let info = {blockId: this.blockId, parameters: copiedFileParameters}
-        this.$store.commit('inputParameters', info)
+        let info = {blockId: this.blockId, imageFilePath: copiedFileParameters.imageFilePath}
+        this.$store.commit('inputFilePath', info)
       }
 
     },

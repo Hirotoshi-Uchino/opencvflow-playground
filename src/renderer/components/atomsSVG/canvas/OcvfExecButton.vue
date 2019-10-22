@@ -6,7 +6,7 @@
         fill="#2EFE2E"
         stroke-width="2"
         stroke="#A4A4A4"
-        @click="execPipeline"
+        @click="handleClick"
     />
   </g>
 
@@ -48,10 +48,8 @@
     },
 
     methods: {
-      execPipeline: function(){
-        let pipeline = this.$store.getters.getPipeline(this.blockId)
-        console.log('pipeline: ')
-        console.log(pipeline)
+      handleClick: function(){
+        this.$emit('execPipeline')
       }
     }
   }

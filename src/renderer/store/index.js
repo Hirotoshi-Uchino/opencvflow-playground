@@ -31,8 +31,8 @@ let blocks = [
   },
   {
     blockId: 3,
-    iconLabel: 'Fi',
-    processId: 3,
+    iconLabel: 'Bi',
+    processId: 2,
     execButton: false,
     x: 220,
     y: 30,
@@ -87,10 +87,20 @@ export default new Vuex.Store({
     pipelines: [],
     links: [],
     nextBlockId: 5,
-    nextLinkId: 1
+    nextLinkId: 1,
+    targetImageExt: '',
+    pipelineResultList: []
   },
 
   mutations: {
+    setPipelineResult(state, result){
+      state.pipelineResultList = result
+    },
+
+    setTargetImageExt(state, ext){
+      state.targetImageExt = ext
+    },
+
     addBlock(state, block){
       state.blocks.push(block)
       // state.blocks[state.nextBlockId] = block // Hash に追加の場合は算術プロパティが発火しない this.$set?

@@ -14,6 +14,7 @@
           @removeBlock="removeBlock"
           @displayFileInput="displayFileInput"
           @displayParameterSetting="displayParameterSetting"
+          @execPipeline="execPipeline"
       />
       <OcvfLink
           v-for="link in links"
@@ -403,6 +404,10 @@
 
       reconstructPipelines: function(){
         this.$store.commit('reconstructPipelines', this.links)
+      },
+
+      execPipeline: function(blockId){
+        this.$emit('execPipeline', blockId)
       }
 
     }

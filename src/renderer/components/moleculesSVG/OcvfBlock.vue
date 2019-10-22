@@ -1,8 +1,20 @@
 <template>
 
   <g :block-id="blockId" :x="x" :y="y" :process-id="processId">
-    <ocvf-exec-button v-if="execButton" :exec-button="execButton" :x="x" :y="y" :block-id="blockId"></ocvf-exec-button>
-    <ocvf-left-side-bar v-if="displayLSB" :x="x" :y="y" @addPointLeft="addPoint"></ocvf-left-side-bar>
+    <ocvf-exec-button
+        v-if="execButton"
+        :exec-button="execButton"
+        :x="x"
+        :y="y"
+        :block-id="blockId"
+        @execPipeline="execPipeline"
+    />
+    <ocvf-left-side-bar
+        v-if="displayLSB"
+        :x="x"
+        :y="y"
+        @addPointLeft="addPoint"
+    />
     <ocvf-tile
         :block-id="blockId"
         :icon-label="iconLabel"
@@ -11,9 +23,12 @@
         @handleRightClick="handleRightClick"
         @blockSelected="startDrag"
         @handleDoubleClick="handleDoubleClick"
-    >
-    </ocvf-tile>
-    <ocvf-right-side-bar :x="x" :y="y" @addPointRight="addPoint" ></ocvf-right-side-bar>
+    />
+    <ocvf-right-side-bar
+        :x="x"
+        :y="y"
+        @addPointRight="addPoint"
+    />
   </g>
 </template>
 
@@ -79,6 +94,10 @@
         } else {
           this.$emit('displayParameterSetting', this.blockId, this.processId)
         }
+      },
+
+      execPipeline: function(){
+        this.$emit('execPipeline', this.blockId)
       }
 
     }

@@ -16,15 +16,18 @@ const mainURL = process.env.NODE_ENV === 'development'
 
 import {PythonShell} from 'python-shell'
 
-let options = {
-  pythonPath: './venv/bin/python',
-  mode: 'json'
-}
 
+ipcMain.on('message', function(ev, pipelineString){
 
-ipcMain.on('message', function(ev, arg){
+  console.log('pipelineString: ', pipelineString)
 
-  PythonShell.run('./backend/sample.py', options, function(err, result){
+  let options = {
+    pythonPath: './venv/bin/python',
+    mode: 'json',
+    args: [pipelineString]
+  }
+
+  PythonShell.run('./backend/main.py', options, function(err, result){
     console.log(result);
     ev.sender.send('reply', result)
   })

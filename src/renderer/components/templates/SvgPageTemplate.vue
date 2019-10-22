@@ -6,8 +6,13 @@
           @addBlock="addBlock"
       />
       <div id="main" class="pane">
-        <SvgCanvas id="canvas"/>
-        <ResultPreview id="preview"/>
+        <SvgCanvas
+            id="canvas"
+            @execPipeline="execPipeline"
+        />
+        <ResultPreview
+            id="preview"
+        />
       </div>
 
     </div>
@@ -15,11 +20,20 @@
 </template>
 
 <script>
+  import {ipcRenderer} from 'electron'
   import ProcessSelector from "../organisms/ProcessSelector"
   import ProcessSelectorButtons from "../organisms/ProcessSelectorButtons"
   import SvgCanvas from "../organisms/SvgCanvas"
   import ResultPreview from "../organisms/ResultPreview"
   import {processDefinitions} from "../../configs/processDefinitions"
+
+  let extReg=/(.*)(?:\.([^.]+$))/;
+  let vm;
+
+  ipcRenderer.on('reply', function(ev, result){
+    console.log(result)
+    vm.$store.commit('setPipelineResult', result[0].resultList)
+  })
 
   export default {
     name: "SvgPage",
@@ -55,9 +69,25 @@
 
       },
 
+      execPipeline: function(blockId){
+        vm = this
+        let pipeline = this.$store.getters.getPipeline(blockId)
+
+        // ipcRenderer.send('message', 'ping')
+        console.log(pipeline)
+        console.log(JSON.stringify(pipeline))
+
+        let ext = pipeline.imageFilePath.match(extReg)[2]
+        this.$store.commit('setTargetImageExt', ext)
+        ipcRenderer.send('message', JSON.stringify(pipeline))
+      }
+
     }
 
   }
+
+
+
 </script>
 
 <style scoped>

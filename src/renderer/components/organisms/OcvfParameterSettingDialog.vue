@@ -1,8 +1,9 @@
 <template>
   <dialog
-      :process-id="processId"
+      :process-name="processName"
       :block-id="blockId"
   >
+    <!--:process-id="processId"-->
     <!--:parameters="parameters"-->
     <form method="dialog">
       <header class="toolbar toolbar-header">
@@ -11,15 +12,22 @@
 
       <!--<div id="input-area">-->
       <div id="detail-process-select">
-        <span>select process</span>
-        <select class="form-control">
-          <option v-for="(value, key) in settingParameters">
-            {{key}}
-          </option>
-        </select>
-      </div>
+        <div>
+          <span>select process of {{processName}}</span>
+          <select class="form-control" v-model="nowDetailProcess">
+            <option v-for="dp in detailProcesses">
+              {{dp}}
+            </option>
+          </select>
+        </div>
+        <div id="detail-parameters-setting">
+          <div class="detail-parameter" v-for="sp in settingParameters">
+            <span>set {{sp.paramName}} {{sp.description}}</span><br>
+            <input class="form-control" type="number" :step="sp.step" :value="sp.paramDefault"/>
+          </div>
+        </div>
 
-      <!--</div>-->
+      </div>
 
       <footer class="toolbar toolbar-footer">
         <span class="btn btn-default reset-btn" @click="resetParameters">Reset</span>
@@ -39,29 +47,48 @@
   export default {
     name: "OcvfParameterSettingDialog",
 
+    data: function(){
+      return {
+        nowDetailProcess: ''
+      }
+    },
+
     props: {
-      // parameters:{
-      //   type: Object
-      // },
-      processId: {
-        type: Number,
-        default: 2
+      processName:{
+        type: String,
+        default: 'Binarization'
       },
+      // processId: {
+      //   type: Number,
+      //   default: 2
+      // },
       blockId: {
         type: Number
       }
     },
 
     computed: {
-      settingParameters: function(){
-        let processName = processDefinitions.find(process => process.processId === this.processId).name
+      detailProcesses: function(){
+      //   let processName = processDefinitions.find(process => process.processId === this.processId).name
+
+        // TODO: O.K.後に保持しているものがあればそれを使うようにする
+        this.nowDetailProcess = Object.keys(settingDefinitions[this.processName])[0]
+        return Object.keys(settingDefinitions[this.processName])
         // if(processName.hasOwnProperty('name')){
         //
         // } else{
         //
         // }
-        return settingDefinitions[processName]
+        // return settingDefinitions[processName]
+      },
+
+      settingParameters: function(){
+        // let processName = processDefinitions.find(process => process.processId === this.processId).name
+        let parameters = settingDefinitions[this.processName][this.nowDetailProcess]
+
+        return parameters
       }
+
     },
 
     methods: {
@@ -83,6 +110,9 @@
         // let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
         // let info = {blockId: this.blockId, parameters: copiedFileParameters}
         // this.$store.commit('inputFileParameters', info)
+      },
+      onSelectorChange: function(){
+        console.log('changed')
       }
 
     },
@@ -94,7 +124,18 @@
 
   #detail-process-select{
     width: 90%;
-    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  #detail-parameters-setting{
+    margin-top: 10px;
+  }
+
+  .detail-parameter{
+    margint-top: 10px;
   }
 
   select{

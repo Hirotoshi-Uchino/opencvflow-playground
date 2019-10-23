@@ -25,7 +25,7 @@
     </svg>
     <OcvfParameterSettingDialog
         id="parameter-setting-dialog"
-        :process-id="nowProcessId"
+        :process-name="nowProcessName"
         :block-id="nowProcessBlockId"
         @reconstructPipelines="reconstructPipelines"
     />
@@ -45,6 +45,7 @@
   import OcvfFileInputDialog from "./OcvfFileInputDialog"
   import OcvfParameterSettingDialog from "./OcvfParameterSettingDialog"
   import closestPoint from "../../../main/line"
+  import {processDefinitions} from "../../configs/processDefinitions"
   import settingDefinitions from "../../configs/settingDefinitions"
 
   export default {
@@ -73,7 +74,7 @@
         nowFileParameters: Vue.util.extend({}, settingDefinitions.Input),
         nowInputFileBlockId: 0,
         nowProcessParameters: {},
-        nowProcessId: 0,
+        nowProcessName: 'Binarization',
         nowProcessBlockId: 0
       }
     },
@@ -376,9 +377,17 @@
       },
 
 
+      hasSettingDefinition: function(processName){
+        return Object.keys(settingDefinitions[this.nowProcessName]).length > 0
+      },
+
       displayParameterSetting: function (blockId, processId) {
-        this.nowProcessBlockId        = blockId
-        this.nowProcessId             = processId
+        this.nowProcessBlockId = blockId
+        this.nowProcessName    = processDefinitions.find(process => process.processId === processId).name
+        if(!this.hasSettingDefinition(this.nowProcessName)){
+          return
+        }
+
         console.log('displayParameterSetting')
         console.log(blockId + ' : ' + processId)
         let block = this.$store.getters.getBlock(blockId)

@@ -23,7 +23,14 @@
         <div id="detail-parameters-setting">
           <div class="detail-parameter" v-for="sp in settingParameters">
             <span>set {{sp.paramName}} {{sp.description}}</span><br>
-            <input class="form-control" type="number" :step="sp.step" :value="sp.paramDefault"/>
+            <input
+                class="form-control"
+                type="number"
+                :data-paramname="sp.paramName"
+                :step="sp.step"
+                :value="sp.paramDefault"
+                @change="changeParameter"
+            />
           </div>
         </div>
 
@@ -49,7 +56,8 @@
 
     data: function(){
       return {
-        nowDetailProcess: ''
+        nowDetailProcess: '',
+        detailParametersCache: {}
       }
     },
 
@@ -85,7 +93,11 @@
       settingParameters: function(){
         // let processName = processDefinitions.find(process => process.processId === this.processId).name
         let parameters = settingDefinitions[this.processName][this.nowDetailProcess]
-
+        this.detailParametersCache = {}
+        for(let i in parameters){
+          let sp = parameters[i]
+          this.detailParametersCache[sp.paramName] = sp.paramDefault
+        }
         return parameters
       }
 
@@ -98,21 +110,30 @@
       },
 
       setParameters: function(){
+        let parameters = {'detailProcess': this.nowDetailProcess}
+        parameters['detailParameters']  = this.detailParametersCache
+        // TODO: input の 値は、block.parametersにうまくbindするのがよいのか?
+
+        let copiedParameters = Vue.util.extend({}, parameters)
+        let info = {blockId: this.blockId, parameters: copiedParameters}
+        this.$store.commit('setParameters', info)
+      },
+
+      resetParameters: function(){
+        // this.nowDetailProcess = Object.keys(settingDefinitions[this.processName])[0]
+        // return Object.keys(settingDefinitions[this.processName])
+        //
         // let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
         // let info = {blockId: this.blockId, parameters: copiedFileParameters}
         // this.$store.commit('setParameters', info)
       },
 
-      resetParameters: function(){
-        // for(let i in this.fileParameters){
-        //   this.fileParameters[i] = ''
-        // }
-        // let copiedFileParameters = Vue.util.extend({}, this.fileParameters)
-        // let info = {blockId: this.blockId, parameters: copiedFileParameters}
-        // this.$store.commit('inputFileParameters', info)
-      },
-      onSelectorChange: function(){
-        console.log('changed')
+      changeParameter: function(ev){
+        let paramName = ev.currentTarget.dataset['paramname']
+        let value = Number(ev.currentTarget.value) // TODO: Number以外
+        // this.detailParametersCache[paramName] = value
+
+        console.log(this.detailParametersCache)
       }
 
     },

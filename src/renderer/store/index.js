@@ -157,6 +157,11 @@ export default new Vuex.Store({
       selectedBlock.parameters = info.parameters
     },
 
+    setParameters(state, info){
+      let selectedBlock = state.blocks.find(block => block.blockId === info.blockId)
+      selectedBlock.parameters = info.parameters
+    },
+
     reconstructPipelines(state, links) {
       // pipeline初期化
       state.pipelines = []

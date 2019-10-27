@@ -8,19 +8,20 @@ def exec_pipeline(img_ndarray, pp):
     result = {'resultList': []}
     existsError = False
     trace = ''
-    for p in pp.parse():
-        process  = p['process']
 
-        try:
+    try:
+        for p in pp.parse():
+            process  = p['process']
+
             img_ndarray, base64 = process.do(img_ndarray)
             this_result = {'blockId': p['block_id'], 'base64': base64}
             result['resultList'].append(this_result)
 
-        except:
-            existsError = True
-            trace = traceback.format_exc()
+    except:
+        existsError = True
+        trace = traceback.format_exc()
 
-            break
+            # break
 
     if existsError:
         resultHeader = {'code': '002'}
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         resultHeader = {'code': '001'}
         result = {'header': resultHeader}
         result = {'errorMessage': pp.imageFilePath + ': No such file.'}
-        print(json.dumps(result))
     else:
         result = exec_pipeline(img_ndarray, pp)
-        print(json.dumps(result))
+
+    print(json.dumps(result))

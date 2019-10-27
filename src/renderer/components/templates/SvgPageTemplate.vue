@@ -34,7 +34,13 @@
 
   ipcRenderer.on('reply', function(ev, result){
     console.log(result)
-    vm.$store.commit('setPipelineResult', result[0].resultList)
+    let res = result[0]
+    if(res.header.code !== '000'){
+      alert('Error Occurred on backend process.\n\n' + res.errorMessage)
+      return
+    }
+
+    vm.$store.commit('setPipelineResult', res.resultList)
   })
 
   export default {
@@ -104,9 +110,13 @@
         vm = this
         let pipeline = this.$store.getters.getPipeline(blockId)
 
-        // ipcRenderer.send('message', 'ping')
         console.log(pipeline)
         console.log(JSON.stringify(pipeline))
+
+        if(pipeline.imageFilePath === ''){
+          alert('Input image file from "File Input Block".')
+          return
+        }
 
         let ext = pipeline.imageFilePath.match(extReg)[2]
         this.$store.commit('setTargetImageExt', ext)

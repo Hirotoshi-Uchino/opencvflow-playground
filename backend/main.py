@@ -4,24 +4,48 @@ import traceback
 
 from pipeline_parser import PipelineParser
 
-args = sys.argv
-pipelineInfoString = args[1]
+def exec_pipeline(img_ndarray, pp):
+    result = {'resultList': []}
+    existsError = False
+    trace = ''
+    for p in pp.parse():
+        process  = p['process']
 
-resultHeader = {'code': '000'}
-pp = PipelineParser(pipelineInfoString)
+        try:
+            img_ndarray, base64 = process.do(img_ndarray)
+            this_result = {'blockId': p['block_id'], 'base64': base64}
+            result['resultList'].append(this_result)
 
-img_ndarray = pp.get_image()
+        except:
+            existsError = True
+            trace = traceback.format_exc()
 
-result = {'resultList': []}
-for p in pp.parse():
-    process  = p['process']
+            break
 
-    try:
-        img_ndarray, base64 = process.do(img_ndarray)
-        this_result = {'blockId': p['block_id'], 'base64': base64}
-        result['resultList'].append(this_result)
+    if existsError:
+        resultHeader = {'code': '002'}
+        result['errorMessage'] = trace
+    else:
+        resultHeader = {'code': '000'}
 
-    except:
-        print(traceback.format_exc())
+    result['header'] = resultHeader
 
-print(json.dumps(result))
+    return result
+
+
+if __name__ == '__main__':
+    args = sys.argv
+    pipelineInfoString = args[1]
+
+    pp = PipelineParser(pipelineInfoString)
+
+    img_ndarray = pp.get_image()
+
+    if img_ndarray is None:
+        resultHeader = {'code': '001'}
+        result = {'header': resultHeader}
+        result = {'errorMessage': pp.imageFilePath + ': No such file.'}
+        print(json.dumps(result))
+    else:
+        result = exec_pipeline(img_ndarray, pp)
+        print(json.dumps(result))

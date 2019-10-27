@@ -73,7 +73,7 @@ class Filter(ProcessBase):
     def _average_filter(self, img_ndarray):
         kernel_x = self.detail_parameters['kernelX']
         kernel_y = self.detail_parameters['kernelY']
-        return cv2.Blur(img_ndarray, (kernel_x, kernel_y))
+        return cv2.blur(img_ndarray, (kernel_x, kernel_y))
 
     def _median_filter(self, img_ndarray):
         kernel = self.detail_parameters['kernel']

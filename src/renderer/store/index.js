@@ -22,37 +22,37 @@ let blocks = [
       imageData: ''
     }
   },
-  {
-    blockId: 2,
-    processId: 1,
-    iconLabel: 'GS',
-    execButton: false,
-    x: 120,
-    y: 30,
-    linksToNextBlock: [],
-    parameters: {}
-    // linkToPreviousBlock: {} // Link 作成時にこの要素が追加される。 (Input Block以外)
-  },
-  {
-    blockId: 3,
-    iconLabel: 'Bi',
-    processId: 2,
-    execButton: false,
-    x: 220,
-    y: 30,
-    linksToNextBlock: [],
-    parameters: {}
-  },
-  {
-    blockId: 4,
-    iconLabel: 'Gr',
-    processId: 4,
-    execButton: false,
-    x: 320,
-    y: 30,
-    linksToNextBlock: [],
-    parameters: {}
-  },
+  // {
+  //   blockId: 2,
+  //   processId: 1,
+  //   iconLabel: 'GS',
+  //   execButton: false,
+  //   x: 120,
+  //   y: 30,
+  //   linksToNextBlock: [],
+  //   parameters: {}
+  //   // linkToPreviousBlock: {} // Link 作成時にこの要素が追加される。 (Input Block以外)
+  // },
+  // {
+  //   blockId: 3,
+  //   iconLabel: 'Bi',
+  //   processId: 2,
+  //   execButton: false,
+  //   x: 220,
+  //   y: 30,
+  //   linksToNextBlock: [],
+  //   parameters: {}
+  // },
+  // {
+  //   blockId: 4,
+  //   iconLabel: 'Gr',
+  //   processId: 4,
+  //   execButton: false,
+  //   x: 320,
+  //   y: 30,
+  //   linksToNextBlock: [],
+  //   parameters: {}
+  // },
 ]
 
 
@@ -90,7 +90,7 @@ export default new Vuex.Store({
     blocks: blocks,
     pipelines: [],
     links: [],
-    nextBlockId: 5,
+    nextBlockId: 2,
     nextLinkId: 1,
     targetImageExt: '',
     pipelineResultList: []

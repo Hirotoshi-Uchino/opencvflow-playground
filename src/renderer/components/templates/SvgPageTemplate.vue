@@ -86,19 +86,25 @@
         } else {
           let processName = processDefinitions.find(process => process.processId === processId).name
           let settingParameters = Vue.util.extend({}, settingDefinitions[processName])
-          let processDetail = Object.keys(settingParameters)[0] // Binarization なら Binary
+          let detailProcess = Object.keys(settingParameters)[0] // Binarization なら Binary
 
-          let detailParameters = []
-          for (let i in settingParameters[processDetail]) {
-            let tmp = {
-              paramName: settingParameters[processDetail][i]['paramName'],
-              paramDefault: settingParameters[processDetail][i]['paramDefault']
-            }
-            detailParameters.push(tmp)
+          let detailParameters = {}
+          for (let i in settingParameters[detailProcess]) {
+            let paramName = settingParameters[detailProcess][i]['paramName']
+            let paramDefault = settingParameters[detailProcess][i]['paramDefault']
+            // let tmp = {}
+            // tmp[paramName] = paramDefault
+            // let tmp = {
+            //   settingParameters[detailProcess][i]['paramName']: settingParameters[detailProcess][i]['paramDefault']
+            // }
+            // paramName: settingParameters[detailProcess][i]['paramName'],
+            //   paramDefault: settingParameters[detailProcess][i]['paramDefault']
+            detailParameters[paramName] = paramDefault
+            // detailParameters.push(tmp)
           }
 
           return {
-            processDetail: processDetail,
+            detailProcess: detailProcess,
             detailParameters: detailParameters
           }
 

@@ -3,14 +3,11 @@
       :process-name="processName"
       :block-id="blockId"
   >
-    <!--:process-id="processId"-->
-    <!--:parameters="parameters"-->
     <form method="dialog">
       <header class="toolbar toolbar-header">
         <h1 class="title">Parameter Settings</h1>
       </header>
 
-      <!--<div id="input-area">-->
       <div id="detail-process-select">
         <div>
           <span>select process of {{processName}}</span>
@@ -28,9 +25,10 @@
                 type="number"
                 :data-paramname="sp.paramName"
                 :step="sp.step"
-                :value="sp.paramDefault"
+                :value="getParamValue(sp.paramName)"
                 @change="changeParameter"
             />
+<!--/            :value="sp.paramDefault"-->
           </div>
         </div>
 
@@ -47,9 +45,7 @@
 
 <script>
   import Vue from 'vue'
-  import {processDefinitions} from "../../configs/processDefinitions"
   import settingDefinitions from "../../configs/settingDefinitions"
-
 
   export default {
     name: "OcvfParameterSettingDialog",
@@ -66,10 +62,6 @@
         type: String,
         default: 'Binarization'
       },
-      // processId: {
-      //   type: Number,
-      //   default: 2
-      // },
       blockId: {
         type: Number
       }
@@ -80,25 +72,39 @@
       //   let processName = processDefinitions.find(process => process.processId === this.processId).name
 
         // TODO: O.K.後に保持しているものがあればそれを使うようにする
-        this.nowDetailProcess = Object.keys(settingDefinitions[this.processName])[0]
+        let block = this.$store.getters.getBlock(this.blockId)
+
+        if(!block){
+          return
+        }
+        console.log(block)
+
+        // this.nowDetailProcess = Object.keys(settingDefinitions[this.processName])[0]
+        this.nowDetailProcess = block.parameters.detailProcess
         return Object.keys(settingDefinitions[this.processName])
-        // if(processName.hasOwnProperty('name')){
-        //
-        // } else{
-        //
-        // }
-        // return settingDefinitions[processName]
       },
 
       settingParameters: function(){
         // let processName = processDefinitions.find(process => process.processId === this.processId).name
-        let parameters = settingDefinitions[this.processName][this.nowDetailProcess]
+        // let parameters = settingDefinitions[this.processName][this.nowDetailProcess]
+        console.log(this.nowDetailProcess)
+
+        let copiedSettingParameters = Vue.util.extend({}, settingDefinitions[this.processName][this.nowDetailProcess])
+
+        // if(this.nowDetailProcess === block.parameters.detailProcess){
+        //   // parameterが記録されているとき、それでsettingParameterを上書きする
+        //   for(let i in copiedSettingParameters){
+        //     let param = copiedSettingParameters[i]
+        //     param.paramDefault = block.parameters.detailParameters[param.paramName]
+        //   }
+        // }
+
         this.detailParametersCache = {}
-        for(let i in parameters){
-          let sp = parameters[i]
+        for(let i in copiedSettingParameters){
+          let sp = copiedSettingParameters[i]
           this.detailParametersCache[sp.paramName] = sp.paramDefault
         }
-        return parameters
+        return copiedSettingParameters
       }
 
     },
@@ -119,6 +125,30 @@
         this.$store.commit('setParameters', info)
       },
 
+
+      getParamValue: function(paramName){
+        let block = this.$store.getters.getBlock(this.blockId)
+
+        let parameters = settingDefinitions[this.processName][this.nowDetailProcess]
+        if(!block || this.nowDetailProcess !== block.parameters.detailProcess){
+          let detailParam = parameters.find(param => param.paramName === paramName)
+          return detailParam.paramDefault
+        } else {
+          return block.parameters.detailParameters[paramName]
+        }
+
+        // if(this.nowDetailProcess === block.parameters.detailProcess){
+        //   // parameterが記録されているとき、それでsettingParameterを上書きする
+        //   for(let i in copiedSettingParameters){
+        //     let param = copiedSettingParameters[i]
+        //     param.paramDefault = block.parameters.detailParameters[param.paramName]
+        //   }
+        // } else {
+        //
+        // }
+
+      },
+
       resetParameters: function(){
         // this.nowDetailProcess = Object.keys(settingDefinitions[this.processName])[0]
         // return Object.keys(settingDefinitions[this.processName])
@@ -131,7 +161,7 @@
       changeParameter: function(ev){
         let paramName = ev.currentTarget.dataset['paramname']
         let value = Number(ev.currentTarget.value) // TODO: Number以外
-        // this.detailParametersCache[paramName] = value
+        this.detailParametersCache[paramName] = value
 
         console.log(this.detailParametersCache)
       }

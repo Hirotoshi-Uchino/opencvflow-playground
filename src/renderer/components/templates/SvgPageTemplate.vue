@@ -142,19 +142,19 @@
     /*width: 200px;*/
     /*border: solid #444444;*/
     /*border-width: 0px 1px 0em 0px;*/
-    height: 800px;
+    height: 100%;
   }
 
   #canvas{
     width: 800px;
-    height: 800px;
-    border: solid #444444;
-    border-width: 0px 1px 0px 0px;
+    height: 100%;
   }
 
   #preview{
     width: 400px;
-    height: 800px;
+    height: 100%;
+    border: solid #dddddd;
+    border-width: 0px 0px 0px 1px;
   }
 
   #main {

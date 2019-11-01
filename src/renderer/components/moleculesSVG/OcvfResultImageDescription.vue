@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="process-label" @click="downloadImage">
+    <div class="process-label" @click="onClickProcessLabel">
       <span class="icon icon-download"></span>
       <span style="margin-left: 5px">{{processLabel}}</span>
     </div>
@@ -11,10 +11,19 @@
 </template>
 
 <script>
+  import Vue from 'vue'
   import {processDefinitions} from '../../configs/processDefinitions'
 
   export default {
     name: "OcvfResultImageDescription",
+
+    data: function(){
+      return {
+        // processLabel: '',
+        // detailParameters: {}
+        previousBlockId: 0
+      }
+    },
 
     props:{
       blockId: {
@@ -24,37 +33,112 @@
 
     computed: {
       processLabel: function(){
-        let block = this.$store.getters.getBlock(this.blockId)
-        let processId = block.processId
+        // let block = this.$store.getters.getBlock(this.blockId)
+        // if(!block) return
+        try {
+          let pipeline = this.$store.state.executedPipeline
+          let info = pipeline.find(process => process.blockId === this.blockId)
+          console.log('----------- processLabel ----------')
+          console.log(this.blockId)
+          console.log(pipeline)
+          console.log(info)
 
-        let processName = processDefinitions.find(process => process.processId === processId).name
+          let processId = info.processId
 
-        let parameters  = block.parameters
-        let detailProcess = parameters.detailProcess
-        if(detailProcess){
-          return processName + ' - ' + detailProcess
-        } else{
-          return processName
+          let processName = processDefinitions.find(process => process.processId === processId).name
+
+          let parameters = info.parameters
+          let detailProcess = parameters.detailProcess
+          if (detailProcess) {
+            return processName + ' - ' + detailProcess
+          } else {
+            return processName
+          }
+        } catch (e) {
+          // block を1つ削除して、別のblockを付け加えてpipeline実行したとき、
+          // blockId が executedPipelineより先に更新される。
+          // このとき、pipeline.find で見つからずエラーとなるので、対処している
+          console.log('Error in processLabel')
+          console.log(e)
+          return
         }
 
       },
 
       detailParameters: function () {
-        let block = this.$store.getters.getBlock(this.blockId)
-        console.log('hoge')
+        try {
+          let pipeline = this.$store.state.executedPipeline
+          let info = pipeline.find(process => process.blockId === this.blockId)
 
-        let parameters  = block.parameters
-        return parameters.detailParameters
+          let parameters  = info.parameters
+          return parameters.detailParameters
+        } catch (e) {
+          // block を1つ削除して、別のblockを付け加えてpipeline実行したとき、
+          // blockId が executedPipelineより先に更新される。
+          // このとき、pipeline.find で見つからずエラーとなるので、対処している
+          console.log('Error in processLabel')
+          console.log(e)
+          return
+        }
       },
 
     },
 
     methods:{
-      downloadImage: function(){
-        console.log("download Image.")
-      }
+      onClickProcessLabel: function(ev){
+        console.log("process label clicked.")
+        let block = this.$store.getters.getBlock(this.blockId)
+        let processId = block.processId
+        let processName = processDefinitions.find(process => process.processId === processId).name
+        let parameters  = block.parameters
+        let detailProcess    = parameters.detailProcess
+        let detailParameters = parameters.detailParameters
 
-    }
+        let filename = processName
+        if(!!detailProcess){
+          filename += '@' + detailProcess
+        }
+        for(let key in detailParameters){
+          filename += '_' + key + '@' + detailParameters[key]
+        }
+
+        this.$emit('download-image', ev, filename)
+      },
+
+      // setProcessLabel: function(){
+      //   let block = this.$store.getters.getBlock(this.blockId)
+      //   if(!block) return
+      //
+      //   let processId = block.processId
+      //
+      //   let processName = processDefinitions.find(process => process.processId === processId).name
+      //
+      //   let parameters  = block.parameters
+      //   let detailProcess = parameters.detailProcess
+      //   if(detailProcess){
+      //     this.processLabel = processName + ' - ' + detailProcess
+      //   } else{
+      //     this.processLabel = processName
+      //   }
+      //
+      // },
+      //
+      // setDetailParameters: function () {
+      //   let block = this.$store.getters.getBlock(this.blockId)
+      //   if(!block) return
+      //   console.log('hoge')
+      //
+      //   let parameters  = block.parameters
+      //   this.detailParameters = parameters.detailParameters
+      // },
+
+    },
+
+    // created: function() {
+    //   this.setProcessLabel()
+    //   this.setDetailParameters()
+    // }
+
   }
 </script>
 

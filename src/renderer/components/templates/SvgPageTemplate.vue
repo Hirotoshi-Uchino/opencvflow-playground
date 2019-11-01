@@ -126,6 +126,8 @@
 
         let ext = pipeline.imageFilePath.match(extReg)[2]
         this.$store.commit('setTargetImageExt', ext)
+        console.log(Vue.util.extend({}, pipeline))
+        this.$store.commit('setExecutedPipeline', Vue.util.extend([], pipeline.pipeline))
         ipcRenderer.send('message', JSON.stringify(pipeline))
       }
 

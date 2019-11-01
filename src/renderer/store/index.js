@@ -93,6 +93,7 @@ export default new Vuex.Store({
     nextBlockId: 2,
     nextLinkId: 1,
     targetImageExt: '',
+    executedPipeline: {},
     pipelineResultList: []
   },
 
@@ -103,6 +104,10 @@ export default new Vuex.Store({
 
     setTargetImageExt(state, ext){
       state.targetImageExt = ext
+    },
+
+    setExecutedPipeline(state, pipeline){
+      state.executedPipeline = pipeline
     },
 
     addBlock(state, block){

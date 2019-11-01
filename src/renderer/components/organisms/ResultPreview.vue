@@ -1,6 +1,7 @@
 <template>
   <div class="result-preview">
     <!--display area.-->
+    <a id="download" style="display:none"></a>
     <div class="title">
       Result Preview
     </div>
@@ -9,6 +10,7 @@
       <OcvfResultImageDescription
         class="description"
         :block-id="result.blockId"
+        @download-image="downloadImage"
       />
       <img :src="addSourcePrefix(result.base64)" />
     </div>
@@ -38,33 +40,64 @@
         }
       },
 
-      getProcessParameters: function(blockId){
-        let block = this.$store.getters.getBlock(blockId)
-        let processId = block.processId
+      downloadImage: function(ev, filename){
+        console.log('downloadImage in RP')
+        console.log(filename)
+        console.log(ev)
 
-        let processName = processDefinitions.find(process => process.processId === processId).name
-        let parameters  = block.parameters
+        filename += '.' + this.$store.state.targetImageExt
 
-        let detailProcess = parameters.detailProcess
-        if(detailProcess){
-          return processName + ' - ' + detailProcess
-        } else{
-          return processName
+        let img = ev.currentTarget.parentElement.nextElementSibling
+
+        let image_data = atob(img.src.split(',')[1])
+        // Use typed arrays to convert the binary data to a Blob
+        let arraybuffer = new ArrayBuffer(image_data.length)
+        let view = new Uint8Array(arraybuffer)
+        let blob;
+        for (let i=0; i<image_data.length; i++) {
+          view[i] = image_data.charCodeAt(i) & 0xff
+        }
+        try {
+          // This is the recommended method:
+          blob = new Blob([arraybuffer], {type: 'application/octet-stream'})
+        } catch (e) {
+          // The BlobBuilder API has been deprecated in favour of Blob, but older
+          // browsers don't know about the Blob constructor
+          // IE10 also supports BlobBuilder, but since the `Blob` constructor
+          //  also works, there's no need to add `MSBlobBuilder`.
+          let bb = new (window.WebKitBlobBuilder || window.MozBlobBuilder)
+          bb.append(arraybuffer)
+          blob = bb.getBlob('application/octet-stream') // <-- Here's the Blob
         }
 
-      }
-    }
-    // data: function () {
-    //   return {
-    //     display: false
-    //   }
-    // },
+        // Use the URL object to create a temporary URL
+        var url = (window.webkitURL || window.URL).createObjectURL(blob)
 
-    // props: {
-    //   resultList: {
-    //     type: Array
-    //   }
-    // }
+        let a = document.getElementById('download')
+
+        a.href = url
+        a.download = filename
+        a.click()
+        window.URL.revokeObjectURL(url)
+
+      },
+
+      // getProcessParameters: function(blockId){
+      //   let block = this.$store.getters.getBlock(blockId)
+      //   let processId = block.processId
+      //
+      //   let processName = processDefinitions.find(process => process.processId === processId).name
+      //   let parameters  = block.parameters
+      //
+      //   let detailProcess = parameters.detailProcess
+      //   if(detailProcess){
+      //     return processName + ' - ' + detailProcess
+      //   } else{
+      //     return processName
+      //   }
+      // }
+
+    }
   }
 </script>
 

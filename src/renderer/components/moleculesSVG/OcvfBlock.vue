@@ -29,10 +29,14 @@
         :y="y"
         @addPointRight="addPoint"
     />
+    <text :x="labelX" :y="labelY" fill="#848484" style="inline-size: 100px; text-anchor: middle">
+      {{label}}
+    </text>
   </g>
 </template>
 
 <script>
+  import {processDefinitions} from "../../configs/processDefinitions"
   import OcvfTile from "../atomsSVG/canvas/OcvfTile"
   import OcvfRightSideBar from "../atomsSVG/canvas/OcvfRightSideBar"
   import OcvfLeftSideBar from "../atomsSVG/canvas/OcvfLeftSideBar"
@@ -71,6 +75,16 @@
     computed: {
       displayLSB: function(){
         return this.processId !== 0 // prcessId = 1, すなわち入力のときは leftSideBar は表示しない
+      },
+      label: function(){
+        let process = processDefinitions.find(process => process.processId === this.processId)
+        return process.label
+      },
+      labelX: function(){
+        return this.x + 24
+      },
+      labelY: function(){
+        return this.y + 67
       }
     },
 
@@ -108,5 +122,9 @@
 </script>
 
 <style scoped>
+  text{
+    font-size: 13px;
+    font-weight: bold;
+  }
 
 </style>

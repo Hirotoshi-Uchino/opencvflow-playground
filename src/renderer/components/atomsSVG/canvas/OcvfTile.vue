@@ -20,8 +20,7 @@
         yr="10"
         fill="#f0f8ff"
     />
-    <!--TODO: 文字のブロック内の位置調整-->
-    <text :x="textX" :y="textY">
+    <text :x="textX" :y="textY" style="inline-size: 45px; text-anchor: middle">
       {{iconLabel}}
     </text>
   </g>
@@ -53,7 +52,7 @@
 
     computed: {
       textX: function() {
-        return this.x + 5
+        return this.x + 24
       },
       textY: function() {
         return this.y + 33

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, remote } from 'electron'
 
 /**
  * Set `__static` path to static files in production
@@ -15,10 +15,13 @@ const mainURL = process.env.NODE_ENV === 'development'
 
 
 import {PythonShell} from 'python-shell'
-
+const exec = require('child_process').execFile
 
 ipcMain.on('message', function(ev, pipelineString){
 
+  let path = app.getAppPath()
+
+  console.log('path: ', path)
   console.log('pipelineString: ', pipelineString)
 
   let options = {
@@ -31,6 +34,13 @@ ipcMain.on('message', function(ev, pipelineString){
     console.log(result);
     ev.sender.send('reply', result)
   })
+
+  // exec("/Users/hirotoshi/VueProjects/opencvflow-playground/src/main", [pipelineString], function(err, result, stderr){
+  //   exec("/Users/hirotoshi/VueProjects/opencvflow-playground/src/main", [], function(err, result, stderr){
+  //   console.log(result);
+  //   ev.sender.send('reply', result)
+
+  // })
 
 })
 

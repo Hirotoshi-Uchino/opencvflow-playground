@@ -60,6 +60,7 @@
     "draggable-vue-directive": "^2.0.6",
     "jquery": "^3.4.1",
     "konva": "^4.0.9",
+    "opencv4nodejs": "^5.2.0",
     "photon": "git+https://github.com/connors/photon.git",
     "python-shell": "^1.0.8",
     "request": "^2.88.0",

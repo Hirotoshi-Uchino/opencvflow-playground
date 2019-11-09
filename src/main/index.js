@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain, remote } from 'electron'
+import doImageProcessing from './imageProcessing/api'
 
 /**
  * Set `__static` path to static files in production
@@ -17,23 +18,27 @@ const mainURL = process.env.NODE_ENV === 'development'
 import {PythonShell} from 'python-shell'
 const exec = require('child_process').execFile
 
-ipcMain.on('message', function(ev, pipelineString){
+// ipcMain.on('message', function(ev, pipelineString){
+ipcMain.on('message', function(ev, info){
 
   let path = app.getAppPath()
 
   console.log('path: ', path)
-  console.log('pipelineString: ', pipelineString)
+  console.log('pipelineString: ', info.str)
 
   let options = {
     pythonPath: './venv/bin/python',
     mode: 'json',
-    args: [pipelineString]
+    // args: [pipelineString]
+    args: [info.str]
   }
 
-  PythonShell.run('./backend/main.py', options, function(err, result){
-    console.log(result);
-    ev.sender.send('reply', result)
-  })
+  // PythonShell.run('./backend/main.py', options, function(err, result){
+  //   console.log(result);
+  //   ev.sender.send('reply', result)
+  // })
+
+  ev.sender.send('reply', doImageProcessing(info.obj))
 
   // exec("/Users/hirotoshi/VueProjects/opencvflow-playground/src/main", [pipelineString], function(err, result, stderr){
   //   exec("/Users/hirotoshi/VueProjects/opencvflow-playground/src/main", [], function(err, result, stderr){

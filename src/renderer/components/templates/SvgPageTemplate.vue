@@ -33,8 +33,9 @@
   let vm;
 
   ipcRenderer.on('reply', function(ev, result){
-    console.log(result)
-    let res = result[0]
+    // console.log(result)
+    // let res = result[0]
+    let res = result
     if(res.header.code !== '000'){
       alert('Error Occurred on backend process.\n\n' + res.errorMessage)
       return
@@ -128,7 +129,7 @@
         this.$store.commit('setTargetImageExt', ext)
         console.log(Vue.util.extend({}, pipeline))
         this.$store.commit('setExecutedPipeline', Vue.util.extend([], pipeline.pipeline))
-        ipcRenderer.send('message', JSON.stringify(pipeline))
+        ipcRenderer.send('message', {str: JSON.stringify(pipeline), obj: pipeline})
       }
 
     }

@@ -3,7 +3,8 @@ import pipelineParser from './pipelineParser'
 function execPipeline(img, pp) {
   let result = {'resultList': []}
   let existsError = false
-  let stack = ''
+  let eMessage = ''
+
   let base64
 
   try {
@@ -13,7 +14,7 @@ function execPipeline(img, pp) {
       base64  = ret[1]
 
       console.log(img)
-      console.log(base64)
+      // console.log(base64)
       let thisResult = {'blockId': p['blockId'], 'base64': base64}
       result['resultList'].push(thisResult)
     })
@@ -21,13 +22,15 @@ function execPipeline(img, pp) {
   } catch (e) {
     console.log(e)
     existsError = true
-    stack = e.stack
+    eMessage = e.message
+    console.log('e.message: ' + e.message)
+    if(e.stack) eMessage += '\n' + e.stack
   }
 
   let resultHeader = {'code': '000'}
   if (existsError) {
     resultHeader['code'] = '002'
-    result['errorMessage'] = stack
+    result['errorMessage'] = eMessage
   }
 
   result['header'] = resultHeader
@@ -36,8 +39,7 @@ function execPipeline(img, pp) {
 
 
 export default function(pipeline){
-  console.log('Hello from API')
-  console.log('goggo', pipeline)
+  console.log('pipeline', pipeline)
 
   const pp = new pipelineParser(pipeline)
   // console.log(pp.getImage)

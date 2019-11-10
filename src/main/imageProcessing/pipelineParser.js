@@ -1,12 +1,15 @@
 import cv from 'opencv4nodejs'
 import path from 'path'
-import {GrayScale} from "./process"
+import {GrayScale, Binarization, Filter, Gradient} from "./process"
 
 
 export default class{
 
   processMap = {
-    1: GrayScale
+    1: GrayScale,
+    2: Binarization,
+    3: Filter,
+    4: Gradient
   }
 
   constructor(pipelineInfo){

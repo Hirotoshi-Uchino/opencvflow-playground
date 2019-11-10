@@ -61,15 +61,15 @@ export default {
         step: 1
       }
     ],
-    Median: [
-      {
-        paramName: 'kernel',
-        paramDefault: 3,
-        paramType: 'Number',
-        step: 1,
-        description: '(set odd number)',
-      }
-    ],
+    // Median: [
+    //   {
+    //     paramName: 'kernel',
+    //     paramDefault: 3,
+    //     paramType: 'Number',
+    //     step: 1,
+    //     description: '(set odd number)',
+    //   }
+    // ],
     Gaussian: [
       {
         paramName: 'kernelX',

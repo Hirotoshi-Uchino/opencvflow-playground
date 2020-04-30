@@ -58,7 +58,7 @@
     "@branu-jp/v-drag": "^0.1.0",
     "axios": "^0.18.0",
     "draggable-vue-directive": "^2.0.6",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "konva": "^4.0.9",
     "photon": "git+https://github.com/connors/photon.git",
     "python-shell": "^1.0.8",
